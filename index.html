@@ -1115,12 +1115,12 @@ Tono elegante y cálido, concreto y sensorial: qué verán, sentirán y vivirán
 async function importTrip(file){
   if(!file)return;S.impTrip="Leyendo…";render();
   try{
-    const j=JSON.parse(await file.text());const t=j.viaje;const fotos=j.fotos||{};const ids=Object.keys(fotos);const map={};let k=0;
+    const j=JSON.parse(await file.text());const t=j.viaje;const fotos=j.fotos||{};const ids=Object.keys(fotos);const map={};let k=0,fallas=0;
     for(const id of ids){S.impTrip=`Subiendo fotos ${++k}/${ids.length}…`;render();
       const bin=atob(fotos[id].b64);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
-      try{map[id]=await window.__importFoto(new Blob([arr],{type:fotos[id].ct||"image/jpeg"}))}catch(e){}}
+      try{map[id]=await window.__importFoto(new Blob([arr],{type:fotos[id].ct||"image/jpeg"}))}catch(e){fallas++}}
     const fix=o=>{if(Array.isArray(o))return o.map(fix).filter(x=>x!==null);if(o&&typeof o==="object"){if(o.id&&o.url&&String(o.url).startsWith("/_blob/")){return map[o.id]?{...o,...map[o.id]}:null}const r={};for(const [kk,v] of Object.entries(o)){const f=fix(v);if(f!==null)r[kk]=f}return r}return o};
-    const nt=fix(t);S.cur=nt;doSave();S.cur=null;S.impTrip="";render();
+    const nt=fix(t);S.cur=nt;doSave();S.cur=null;S.impTrip=fallas?`Importado · ${fallas} archivos no entraron`:"Importado ✓";render();setTimeout(()=>{S.impTrip="";render()},6000);
   }catch(e){S.impTrip="";render();flash("No pude leer el archivo. Exporta de nuevo desde Claude.")}
 }
 /* ================= Claude ================= */
@@ -1181,5 +1181,5 @@ render();
 })();
 })();
 </script>
-<script type="module" src="runtime.js?v=3"></script>
+<script type="module" src="runtime.js?v=4"></script>
 </body></html>
