@@ -1,5 +1,5 @@
 // Guarda la app en el teléfono para que abra sin internet.
-const V="viajes-v1";
+const V="viajes-v2";
 const SHELL=["./","./index.html","./runtime-stub.js","./runtime.js","./firebase-config.js","./mundo.js","./manifest.webmanifest","./icon-192.png","./icon-512.png",
 "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js","https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});

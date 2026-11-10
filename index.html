@@ -6,6 +6,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..500&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+.lg #lg-google .icon{fill:currentColor;stroke:none}
+
 /* Layout: libreta de viaje en una columna. Panel = expedientes con foto; vista cliente = portada, tarjetas de contacto y pestañas tipo app. */
 :root{
   --paper:#F6F8FA; --card:#FFFFFF; --ink:#1E2A38; --muted:#748191; --line:#E3E9EF;
@@ -28,7 +36,7 @@
   --land:#1D2A38; --stay-a:#1E3045; --stay-b:#2E2A22;
   --ok:#8CC5AC; --warn:#E3A97C; --warn-soft:#2A1F18; color-scheme:dark}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 96px;margin:0}
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 .wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 h1,h2,h3{font-family:var(--f-display);font-weight:400;letter-spacing:-.005em;text-wrap:balance;margin:0}
