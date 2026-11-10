@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signI
   isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, onSnapshot,
   setDoc, deleteDoc, getDoc, getDocFromCache, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { firebaseConfig, OWNER_EMAIL } from "./firebase-config.js";
+import { firebaseConfig, OWNER_EMAIL } from "./firebase-config.js?v=3";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
