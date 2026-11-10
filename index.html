@@ -1,0 +1,1177 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Carlota The Travel Maker</title><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mis viajes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F6F8FA" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0E141B" media="(prefers-color-scheme: dark)">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..500&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: libreta de viaje en una columna. Panel = expedientes con foto; vista cliente = portada, tarjetas de contacto y pestañas tipo app. */
+:root{
+  --paper:#F6F8FA; --card:#FFFFFF; --ink:#1E2A38; --muted:#748191; --line:#E3E9EF;
+  --accent:#6B8CAD; --accent-soft:#EAF1F7; --deep:#D6E4EF; --on-deep:#1E2A38;
+  --land:#DCE5EC; --stay-a:#DCE8F2; --stay-b:#EEE7DA;
+  --ok:#4C7F6A; --warn:#A86A3D; --warn-soft:#F7EDE6;
+  --f-display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:14px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E141B; --card:#141C25; --ink:#E7ECF1; --muted:#93A1AF; --line:#232E3B;
+  --accent:#A3BFDA; --accent-soft:#1B2734; --deep:#1F3043; --on-deep:#E7ECF1;
+  --land:#1D2A38; --stay-a:#1E3045; --stay-b:#2E2A22;
+  --ok:#8CC5AC; --warn:#E3A97C; --warn-soft:#2A1F18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0E141B; --card:#141C25; --ink:#E7ECF1; --muted:#93A1AF; --line:#232E3B;
+  --accent:#A3BFDA; --accent-soft:#1B2734; --deep:#1F3043; --on-deep:#E7ECF1;
+  --land:#1D2A38; --stay-a:#1E3045; --stay-b:#2E2A22;
+  --ok:#8CC5AC; --warn:#E3A97C; --warn-soft:#2A1F18; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 96px;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;letter-spacing:-.005em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,9vw,52px);line-height:1.04}
+h2{font-size:26px;line-height:1.15}
+h3{font-size:21px;line-height:1.2}
+p{margin:0}
+.eyebrow{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.note{font-size:13px;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ok{color:var(--ok)} .err{color:var(--warn)}
+a{color:inherit}
+button,.btn{font:inherit;font-size:13px;font-weight:500;letter-spacing:.03em;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 18px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .2s,border-color .2s}
+button:hover,.btn:hover{border-color:var(--accent)}
+button.primary,.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button.ghost{border-color:transparent;background:transparent;padding-inline:8px;color:var(--muted)}
+button.danger{border-color:var(--warn);color:var(--warn);background:transparent}
+button.mini,.btn.mini{font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:6px 12px;color:var(--accent);border-color:var(--accent-soft);font-weight:600}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:12px}
+input,textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;width:100%;box-sizing:border-box;min-width:0}
+textarea{min-height:76px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted);min-width:0}
+label.chk{display:flex;gap:10px;align-items:center;font-size:14px}
+label.chk input{width:auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:480px){.grid2,.grid3{grid-template-columns:1fr}}
+.icon{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;padding:0}
+.banner{background:var(--accent-soft);border-radius:var(--r);padding:10px 14px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.empty{padding:40px 8px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:8px;align-items:center}
+.ex{font-family:var(--f-mono);font-size:9px;color:var(--warn);border:1px solid currentColor;border-radius:4px;padding:1px 5px;letter-spacing:.06em;vertical-align:middle}
+
+/* ---- Panel ---- */
+.brandtop{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding-block:28px 20px;border-bottom:1px solid var(--line);text-align:center}
+.gear{position:absolute;top:14px;right:0;border:none;background:transparent;color:var(--muted);padding:8px}
+.gear:hover{color:var(--ink)}
+.gear .icon{width:20px;height:20px}
+.brandtop b{font-family:var(--f-display);font-weight:400;font-size:24px;letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.brandtop span{font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);padding-left:.42em}
+.hello{text-align:center;display:flex;flex-direction:column;gap:4px}
+.tabsline{display:flex;justify-content:center;gap:28px;border-bottom:1px solid var(--line)}
+.tabsline button{border:none;border-radius:0;background:none;padding:12px 2px;color:var(--muted);border-bottom:2px solid transparent;font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:600}
+.tabsline button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tcards{display:flex;flex-direction:column;gap:16px}
+.tcard{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:220px;border-radius:16px;overflow:hidden;padding:20px 22px;background:var(--deep) center/cover no-repeat;color:var(--on-deep);border:none;text-align:left;width:100%;font-weight:400;cursor:pointer;gap:2px}
+.tcard.ph{color:#fff}
+.tcard h3{font-size:30px;color:inherit}
+.tcard .sub{font-size:13px;opacity:.9}
+.tcard .arrow{position:absolute;top:18px;right:20px;font-size:20px;opacity:.85}
+.tcard .chip{position:absolute;top:16px;left:18px}
+.chip{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:5px 10px;white-space:nowrap;background:var(--card);color:var(--ink)}
+.chip.curso{background:var(--ok);color:#fff}
+.search{max-width:100%}
+
+/* ---- Editor ---- */
+.sec{display:flex;flex-direction:column;gap:12px;padding-block:20px;border-top:1px solid var(--line)}
+.day{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+.day .dh{display:flex;gap:12px;align-items:baseline}
+.day .dn{font-family:var(--f-mono);font-size:12px;color:var(--accent);white-space:nowrap}
+.day input.dt{border:none;background:transparent;font-family:var(--f-display);font-size:19px;padding:2px 0}
+.eitem{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:start;padding:10px 0;border-top:1px dashed var(--line)}
+.eitem .h{font-family:var(--f-mono);font-size:13px;color:var(--muted);padding-top:2px}
+.eitem .k{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.eitem .ti{font-weight:600}
+.eitem .d{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.iform{display:flex;flex-direction:column;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px}
+.photo-prev{width:100%;aspect-ratio:16/9;max-width:100%;border-radius:var(--r);background:var(--card) center/cover no-repeat;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:12px;box-sizing:border-box}
+.photo-prev.has{border-style:solid;color:transparent}
+.docrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+
+/* ---- Cliente ---- */
+.welcome{position:relative;min-height:min(86vh,760px);border-radius:24px;overflow:hidden;background:var(--deep) center/cover no-repeat;color:var(--on-deep);display:flex;flex-direction:column;justify-content:space-between;padding:26px 22px 22px;gap:24px}
+.welcome.ph{color:#fff}
+.welcome .hi{font-size:17px}
+.welcome .hi i{font-family:var(--f-display);font-size:19px}
+.countbox{align-self:center;background:rgba(20,30,40,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:16px;padding:14px 22px;text-align:center;display:flex;flex-direction:column;gap:8px;color:#fff}
+.welcome:not(.ph) .countbox{background:var(--card);color:var(--ink)}
+.countbox .lbl{font-size:10px;letter-spacing:.24em;text-transform:uppercase}
+.countbox .nums{display:flex;gap:14px;align-items:flex-start;justify-content:center}
+.countbox .nums div{display:flex;flex-direction:column;align-items:center;min-width:54px}
+.countbox .nums b{font-size:26px;font-weight:500;font-variant-numeric:tabular-nums}
+.countbox .nums span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.welcome .mid{text-align:center;display:flex;flex-direction:column;gap:10px}
+.welcome .mid h1{color:inherit}
+.welcome .mid p{font-family:var(--f-display);font-style:italic;font-size:19px}
+.welcome .enter{width:100%;justify-content:center;padding:15px;font-size:15px;background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.welcome.ph .enter{background:rgba(20,26,34,.85);color:#fff;border-color:transparent}
+.cbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:14px;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}
+.cbar .brand{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.cover{position:relative;overflow:hidden;border-radius:22px;background:var(--deep) center/cover no-repeat;color:var(--on-deep);min-height:260px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:28px 20px;gap:8px}
+.cover.ph{color:#fff}
+.cover h1{color:inherit}
+.cover .eyebrow{color:inherit;opacity:.85;letter-spacing:.42em}
+.cover .sub{font-size:14px;opacity:.95}
+.cover:not(.ph)::after{content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border:1px solid var(--accent);border-radius:50%;opacity:.45;box-shadow:0 0 0 22px var(--deep),0 0 0 23px var(--accent)}
+.alert{border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.alert .eyebrow{color:var(--warn);display:flex;gap:8px;align-items:center;justify-content:space-between}
+.alert .line{font-size:14px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.alert .sel{user-select:all;border-bottom:1px dotted currentColor}
+.esim{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--card);border-radius:var(--r);padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-inline:-2px;padding-inline:2px}
+.pills::-webkit-scrollbar{display:none}
+.pills button{white-space:nowrap;font-size:14px;padding:9px 16px}
+.pills button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pills.small button{font-size:12px;padding:6px 12px}
+.tabpane{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.fl{border-left:3px solid var(--accent)}
+.card .tt{display:flex;gap:10px;align-items:center;font-weight:600;font-size:16px}
+.legs{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px dashed var(--line);padding-top:10px}
+.legs .eyebrow{margin-bottom:2px}
+.legs b{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.legs div{font-size:13px;color:var(--muted)}
+.legs div b{color:var(--ink);display:block}
+.confpill{align-self:flex-start;font-family:var(--f-mono);font-size:13px;background:var(--accent-soft);border-radius:999px;padding:4px 12px;letter-spacing:.06em}
+.confpill small{font-size:9px;letter-spacing:.2em;color:var(--muted);margin-right:6px}
+.meta-gold{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.meta-gold span{color:var(--muted);letter-spacing:.14em}
+.infoline{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.infoline .icon{color:var(--accent);margin-top:2px}
+.infoline a,.infoline .sel{text-decoration:none;border-bottom:1px dashed var(--accent);overflow-wrap:anywhere}
+.guests{border-top:1px dashed var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.guests .n{font-family:var(--f-display);font-size:17px}
+.dayhead{display:flex;flex-direction:column;gap:2px;padding-top:14px}
+.citem{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.citem .h{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.citem .k{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.citem .ti{font-weight:600}
+.citem .d{color:var(--muted);font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.doc{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.doc .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.mapbox{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.mapbox svg{width:100%;height:auto;display:block}
+.land{fill:var(--land);stroke:var(--paper);stroke-width:.6}
+.route{fill:none;stroke:var(--accent);stroke-width:1.2;stroke-dasharray:3 4}
+.lead{stroke:var(--muted);stroke-width:.8}
+.pin text.lb,.pin text.lb2{paint-order:stroke;stroke:var(--paper);stroke-width:3px;stroke-linejoin:round}
+.pin circle{fill:var(--accent);stroke:var(--paper);stroke-width:2}
+.pin text.num{fill:var(--paper);font:600 10px var(--f-body);text-anchor:middle;dominant-baseline:central}
+.pin text.lb{fill:var(--ink);font:600 10px var(--f-body);letter-spacing:.14em;text-transform:uppercase}
+.pin text.lb2{fill:var(--muted);font:italic 11px var(--f-display)}
+.stop{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stop .num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.stop .nm{font-family:var(--f-display);font-size:17px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{font-size:10px;letter-spacing:.14em;text-align:center;color:var(--muted);padding-bottom:4px}
+.cal .c{min-height:54px;border-radius:8px;border:1px solid transparent;padding:4px;font-size:12px;display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
+.cal .c.trip{border-color:var(--line);background:var(--card)}
+.cal .c.sa{background:var(--stay-a)} .cal .c.sb{background:var(--stay-b)}
+.cal .c .hn{font-size:9px;line-height:1.2;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cal .c .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:auto;align-self:center}
+.cal .c .num{font-variant-numeric:tabular-nums;color:var(--muted)}
+.cal .c.trip .num{color:var(--ink);font-weight:600}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.legend span.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.footer{text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:2px}
+.footer b{color:var(--ink);font-weight:600}
+.fab{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:8;background:var(--ink);color:var(--paper);border-color:var(--ink);padding:13px 20px;font-size:14px;box-shadow:0 8px 24px rgba(30,42,56,.22)}
+.sheetbg{position:fixed;inset:0;background:rgba(20,30,40,.35);z-index:9}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--card);border-radius:22px 22px 0 0;padding:22px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-width:680px;margin:0 auto;box-shadow:0 -8px 30px rgba(30,42,56,.15)}
+.sheet .ln{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.sheet .ln .v{font-family:var(--f-mono);user-select:all;overflow-wrap:anywhere}
+.footer .sign{font-family:var(--f-display);font-style:italic;font-size:32px;color:var(--ink);line-height:1.2}
+.sumgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sumgrid div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;text-align:center}
+.sumgrid b{display:block;font-family:var(--f-display);font-size:26px;font-weight:400}
+.sumgrid span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.lbthumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+.lbthumbs .th{position:relative;aspect-ratio:1;border-radius:8px;background:var(--line) center/cover no-repeat}
+.lbthumbs .th button{position:absolute;top:3px;right:3px;padding:2px 7px;font-size:11px;background:var(--card)}
+.lbblock{display:flex;flex-direction:column;gap:14px;padding-block:28px;border-top:1px solid var(--line)}
+.lbblock .hero{width:100%;max-width:100%;aspect-ratio:4/3;border-radius:18px;background:var(--deep) center/cover no-repeat}
+.lbblock .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lbblock .pair div{aspect-ratio:3/4;border-radius:14px;background:var(--line) center/cover no-repeat;max-width:100%}
+.lbblock .txt{font-size:16px;line-height:1.7;max-width:60ch;white-space:pre-wrap}
+.lbhero{position:relative;min-height:min(80vh,680px);border-radius:24px;overflow:hidden;background:var(--deep) center/cover no-repeat;color:var(--on-deep);display:flex;flex-direction:column;justify-content:flex-end;padding:28px 22px;gap:10px;text-align:center;align-items:center}
+.lbhero.ph{color:#fff}
+.lbhero h1{color:inherit;font-style:italic}
+.lbhero .eyebrow{color:inherit;letter-spacing:.42em}
+.lbhero p{font-family:var(--f-display);font-size:19px}
+.lbclose{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding-block:24px}
+.fase{background:var(--accent-soft);color:var(--accent)}
+.strip{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}
+.strip::-webkit-scrollbar{display:none}
+.strip img{height:150px;width:auto;max-width:80%;border-radius:12px;object-fit:cover;flex:none;scroll-snap-align:start;cursor:zoom-in;background:var(--line)}
+.hhero{display:block;width:100%;max-width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;cursor:zoom-in;background:var(--line)}
+.dhero{display:block;width:100%;max-width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:16px;cursor:zoom-in;background:var(--line);margin-top:4px}
+.galgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.galgrid img{width:100%;max-width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;cursor:zoom-in;display:block;background:var(--line)}
+.galgrid img:first-child:nth-last-child(odd){grid-column:1/-1;aspect-ratio:3/2}
+.lbx{position:fixed;inset:0;z-index:30;background:rgba(6,10,14,.94);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lbx img{max-width:100%;max-height:72vh;border-radius:10px;object-fit:contain}
+.lbx .cap{font-family:var(--f-display);font-size:18px;text-align:center}
+.lbx .ctr{display:flex;gap:10px;align-items:center}
+.lbx button{background:rgba(255,255,255,.12);color:#fff;border-color:transparent}
+.lbx .x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px))}
+.ethumbs{display:flex;gap:6px;flex-wrap:wrap}
+.ethumbs .th{position:relative;width:64px;height:64px;border-radius:8px;background:var(--line) center/cover no-repeat}
+.ethumbs .th button{position:absolute;top:2px;right:2px;padding:1px 6px;font-size:11px;background:var(--card)}
+.status{display:inline-flex;align-items:center;gap:4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);border-radius:999px;padding:4px 10px;align-self:flex-start}
+.status.pend{color:var(--warn);background:var(--warn-soft)}
+.clock{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.clock>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.clock b{font-size:26px;font-weight:500}
+.nextup{border:1px solid var(--accent);border-radius:var(--r);padding:6px 14px 10px;background:var(--card)}
+.nextup .citem{border-top:none}
+.done{opacity:.55}
+.mini-it{display:grid;grid-template-columns:52px 1fr;gap:10px;font-size:14px;padding:4px 0}
+.mini-it .mono{color:var(--muted);font-size:13px}
+.txt-pre{white-space:pre-wrap;line-height:1.65;font-size:15px}
+.rec{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.rec .nm{font-family:var(--f-display);font-size:18px}
+.chkrow{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:15px}
+.chkrow input{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.chkrow.on span{color:var(--muted);text-decoration:line-through}
+.dress{display:inline-flex;gap:6px;align-items:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-top:4px}
+.dress .icon{width:13px;height:13px}
+.langsw{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.langsw button{border:none;border-radius:0;padding:5px 10px;font-size:11px;letter-spacing:.12em;background:transparent;color:var(--muted)}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.intro{font-family:var(--f-display);font-size:20px;line-height:1.45;color:var(--muted);max-width:60ch}
+@media (prefers-reduced-motion:no-preference){.tcard{transition:transform .25s}.tcard:hover{transform:translateY(-2px)}}
+
+.lg{max-width:420px;margin:12vh auto 0;display:flex;flex-direction:column;gap:16px;text-align:center}
+.lg-brand{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.lg-brand b{font-family:var(--f-display);font-weight:400;font-size:22px;letter-spacing:.3em;text-transform:uppercase}
+.lg-brand span{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--muted)}
+.lg button{justify-content:center;width:100%;padding:14px}.lg-or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.lg-or::before,.lg-or::after{content:"";flex:1;height:1px;background:var(--line)}
+#login{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+[data-act=import],[data-act=infogen],[data-act=lbwrite],[data-act=locate],[data-act=trad],[data-act=recimp],#imp,#recimp{display:none!important}
+</style></head><body>
+
+<div id="login" hidden></div>
+<div class="wrap" id="main" hidden><div class="empty">Cargando tus viajes…</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="mundo.js"></script>
+<script src="runtime-stub.js"></script>
+<script>
+(function(){
+/* ================= estado ================= */
+const PERFIL0={nombre:"Carlota Creel",titulo:"Travel Designer",marca:"",tel:"",whatsapp:"",email:"",esim:true,esimLink:"https://www.airalo.com",esimTexto:"Datos en cuanto aterricen, sin buscar wifi."};
+const S={trips:[],perfil:{...PERFIL0},loaded:false,error:"",view:"home",homeTab:"activos",q:"",cur:null,editItem:null,confirmDel:false,
+  impMsg:"",impBusy:false,locBusy:false,photoBusy:false,photoMsg:"",exBusy:null,exMsg:{},docMsg:"",docBusy:false,owner:null,welcome:true,cTab:"itinerario",perfilMsg:""};
+let db=null,sampleFn=null,assets=null,downloads=null,saveTimer=null,chain=Promise.resolve(),tick=null;
+const $m=document.getElementById("main");
+const TIPOS={vuelo:"Vuelo",hotel:"Hotel",traslado:"Traslado",actividad:"Actividad",restaurante:"Restaurante",nota:"Nota"};
+
+/* ================= utilidades ================= */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)).replace(/-/g,"").slice(0,12);
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse=s=>{const[y,m,d]=(s||"").split("-").map(Number);return new Date(y,(m||1)-1,d||1)};
+const addD=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const hoy=iso(new Date());
+const fmt=(s,o)=>s?parse(s).toLocaleDateString(LOC[S.lang]||"es-MX",o||{day:"numeric",month:"short"}).replace(".",""):"";
+const fmtLargo=s=>{const t=fmt(s,{weekday:"long",day:"numeric",month:"long"});return t.charAt(0).toUpperCase()+t.slice(1)};
+const ndays=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
+const estado=t=>!t.inicio?"proximos":(t.fin&&t.fin<hoy?"pasados":(t.inicio<=hoy?"curso":"proximos"));
+const getP=(o,p)=>p.split(".").reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split(".");let a=o;ks.slice(0,-1).forEach(k=>{if(typeof a[k]!=="object"||!a[k])a[k]={};a=a[k]});a[ks[ks.length-1]]=v};
+const photoUrl=t=>t&&t.portada&&(t.portada.url||(t.portada.id?"/_blob/"+t.portada.id:""));
+const cssUrl=u=>"url('"+String(u).replace(/['"()\\\s]/g,c=>encodeURIComponent(c))+"')";
+const shade=(u,a,b)=>u?`background-image:linear-gradient(180deg,rgba(10,16,24,${a}),rgba(10,16,24,${b})),${cssUrl(u)}`:"";
+const mapsUrl=(n,a)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent([n,a].filter(Boolean).join(", "));
+const I={
+ plane:'<svg class="icon" viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 2.5 2.5 7z"/><path d="m10 13 4-4"/></svg>',
+ bed:'<svg class="icon" viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.6"/></svg>',
+ fork:'<svg class="icon" viewBox="0 0 24 24"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2 1-3 4-3 7h3"/></svg>',
+ car:'<svg class="icon" viewBox="0 0 24 24"><path d="M5 16h14l-1.5-6h-11zM6 16v2M18 16v2"/><circle cx="8" cy="13.5" r=".6"/><circle cx="16" cy="13.5" r=".6"/></svg>',
+ star:'<svg class="icon" viewBox="0 0 24 24"><path d="m12 4 2.3 5 5.2.5-4 3.5 1.2 5.2L12 15.5 7.3 18.2 8.5 13l-4-3.5 5.2-.5z"/></svg>',
+ note:'<svg class="icon" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/></svg>',
+ phone:'<svg class="icon" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1"/></svg>',
+ pin:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>',
+ doc:'<svg class="icon" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>',
+ cal:'<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+ sim:'<svg class="icon" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><rect x="9.5" y="11" width="6" height="6" rx="1"/></svg>'
+};
+const TICON={vuelo:I.plane,hotel:I.bed,restaurante:I.fork,traslado:I.car,actividad:I.star,nota:I.note};
+
+/* todos los elementos de un viaje, con su fecha */
+const allItems=t=>(t.dias||[]).flatMap(d=>(d.items||[]).map(it=>({...it,fecha:d.fecha})));
+const byTime=(a,b)=>(a.fecha+(a.hora||"99")).localeCompare(b.fecha+(b.hora||"99"));
+const hoteles=t=>allItems(t).filter(i=>i.tipo==="hotel").sort(byTime);
+
+function regenDias(t){
+  if(!t.inicio||!t.fin||t.fin<t.inicio) return;
+  const old={};(t.dias||[]).forEach(d=>old[d.fecha]=d);
+  const out=[];let f=t.inicio;
+  while(f<=t.fin&&out.length<120){out.push(old[f]||{fecha:f,titulo:"",items:[]});f=addD(f,1)}
+  Object.keys(old).filter(k=>k<t.inicio||k>t.fin).forEach(k=>{if(old[k].items?.length)out[out.length-1].items.push(...old[k].items)});
+  t.dias=out;
+}
+
+/* ================= guardado ================= */
+function flash(msg){const el=document.getElementById("saveState");if(el)el.textContent=msg}
+function scheduleSave(){if(!db||!S.cur)return;if(S.cur._nuevo){const t=S.cur;if(!t.titulo&&!t.cliente&&!allItems(t).length)return;delete t._nuevo}flash("Guardando…");clearTimeout(saveTimer);saveTimer=setTimeout(doSave,700)}
+function doSave(){
+  const t=JSON.parse(JSON.stringify(S.cur));t.actualizado=new Date().toISOString();
+  t.clientes=[...new Set(String(t.email||"").split(/[\s,;]+/).map(x=>x.trim().toLowerCase()).filter(x=>x.includes("@")))];
+  chain=chain.then(()=>db.collection("viajes").doc(t.id).set(t)).then(()=>flash("Guardado"),e=>flash("No se guardó. Revisa tu conexión."));
+}
+function savePerfil(){
+  if(!db)return;const p={...S.perfil};
+  chain=chain.then(()=>db.doc("ajustes/perfil").set(p)).then(()=>{S.perfilMsg='<span class="ok">Perfil guardado.</span>';render()},()=>{S.perfilMsg='<span class="err">No se guardó. Intenta de nuevo.</span>';render()});
+}
+
+/* ================= render raíz ================= */
+const GAL={};let galN=0;
+function gal(list){const k="g"+(galN++);GAL[k]=list;return k}
+function photoStrip(fotos,cap){
+  const fs=(fotos||[]);if(!fs.length)return "";const k=gal(fs.map(f=>({url:fotoUrl(f),cap})));
+  return `<div class="strip">${fs.map((f,j)=>`<img src="${esc(fotoUrl(f))}" alt="${esc(cap||"")}" loading="lazy" data-act="lbx" data-g="${k}" data-i="${j}">`).join("")}</div>`;
+}
+function heroImg(fotos,cap,cls){const fs=fotos||[];if(!fs.length)return "";const k=gal(fs.map(f=>({url:fotoUrl(f),cap})));
+  return `<img class="${cls}" src="${esc(fotoUrl(fs[0]))}" alt="${esc(cap||"")}" loading="lazy" data-act="lbx" data-g="${k}" data-i="0">`+(fs.length>1?`<div class="strip">${fs.slice(1).map((f,j)=>`<img src="${esc(fotoUrl(f))}" alt="${esc(cap||"")}" loading="lazy" data-act="lbx" data-g="${k}" data-i="${j+1}">`).join("")}</div>`:"")}
+function lbxHTML(){
+  if(!S.lbx)return "";const {list,i}=S.lbx;const f=list[i];if(!f)return "";
+  return `<div class="lbx" role="dialog" aria-label="Foto"><button class="x" data-act="lbxclose">${L("cerrar")}</button><img src="${esc(f.url)}" alt="${esc(f.cap||"")}">${f.cap?`<div class="cap">${esc(f.cap)}</div>`:""}
+    ${list.length>1?`<div class="ctr"><button data-act="lbxmove" data-d="-1" aria-label="Anterior">‹</button><span class="mono">${i+1} / ${list.length}</span><button data-act="lbxmove" data-d="1" aria-label="Siguiente">›</button></div>`:""}</div>`;
+}
+function render(){
+  for(const k in GAL)delete GAL[k];galN=0;
+  clearInterval(tick);tick=null;
+  if(S.view!=="cliente"&&S.view!=="lookbook")S.lang="es";
+  if(S.owner===false){
+    if(S.view==="cliente"&&S.cur) return renderCliente();
+    if(S.view==="lookbook"&&S.cur) return renderLookbook();
+    const P=S.perfil;const list=[...S.trips].sort((a,b)=>(a.inicio||"").localeCompare(b.inicio||""));
+    const act=list.filter(t=>estado(t)!=="pasados"),pas=list.filter(t=>estado(t)==="pasados").reverse();
+    const card=t=>{const u=photoUrl(t),e=estado(t);const chip=e==="curso"?`<span class="chip curso">De viaje</span>`:e==="proximos"&&t.inicio?`<span class="chip">${ndays(hoy,t.inicio)===1?"Mañana":"En "+ndays(hoy,t.inicio)+" días"}</span>`:"";
+      return `<button class="tcard${u?" ph":""}" data-act="copen" data-id="${esc(t.id)}" style="${shade(u,.05,.6)}">${chip}<span class="arrow" aria-hidden="true">→</span><h3>${esc(t.titulo||"Tu viaje")}</h3><span class="sub">${t.inicio?fmt(t.inicio,{day:"numeric",month:"short",year:"numeric"}):""}</span></button>`};
+    $m.innerHTML=`<header class="brandtop"><button class="gear" onclick="__logout()" aria-label="Salir" title="Salir"><svg class="icon" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button><b>${esc(P.marca||P.nombre)}</b><span>${esc(P.marca?P.nombre:"Viajes a la medida")}</span></header>
+      ${!S.loaded?'<div class="empty">Cargando tus viajes…</div>':S.error?`<div class="empty err">${esc(S.error)}</div>`:!list.length?'<div class="empty"><h3>Aún no hay viajes con este correo</h3><p>Si crees que es un error, escríbele a tu asesora.</p></div>':
+      `<div class="tcards">${act.map(card).join("")}</div>${pas.length?`<div class="eyebrow" style="margin-top:8px">Viajes anteriores</div><div class="tcards">${pas.map(card).join("")}</div>`:""}`}`;
+    return;
+  }
+  if(S.view==="editor"&&S.cur) return renderEditor();
+  if(S.view==="cliente"&&S.cur) return renderCliente();
+  if(S.view==="perfil") return renderPerfil();
+  if(S.view==="lookbook"&&S.cur) return renderLookbook();
+  renderHome();
+}
+
+/* ================= panel ================= */
+function renderHome(){
+  const P=S.perfil;
+  const act=S.trips.filter(t=>estado(t)!=="pasados"),pas=S.trips.filter(t=>estado(t)==="pasados");
+  const q=S.q.trim().toLowerCase();
+  let list=(S.homeTab==="activos"?act:pas).filter(t=>!q||[t.titulo,t.cliente,t.email].join(" ").toLowerCase().includes(q));
+  list.sort((a,b)=>S.homeTab==="pasados"?(b.inicio||"").localeCompare(a.inicio||""):(a.inicio||"").localeCompare(b.inicio||""));
+  let body;
+  if(!S.loaded) body='<div class="empty">Cargando tus viajes…</div>';
+  else if(S.error) body=`<div class="empty err">${esc(S.error)}</div>`;
+  else if(!S.trips.length) body='<div class="empty"><h3>Aún no hay viajes</h3><p>Toca “Nuevo viaje” para crear el primero.</p></div>';
+  else if(!list.length) body=`<div class="empty">${q?"Nada coincide con tu búsqueda.":S.homeTab==="activos"?"No hay viajes en curso ni próximos.":"Todavía no hay viajes pasados."}</div>`;
+  else body='<div class="tcards">'+list.map(t=>{
+    const e=estado(t),u=photoUrl(t);
+    const chip=t.fase==="inspiracion"?'<span class="chip fase">Lookbook</span>':t.fase==="propuesta"?'<span class="chip fase">Propuesta</span>':e==="curso"?`<span class="chip curso">Viajando · día ${ndays(t.inicio,hoy)+1}</span>`:e==="proximos"&&t.inicio?`<span class="chip">${ndays(hoy,t.inicio)===1?"Mañana":"En "+ndays(hoy,t.inicio)+" días"}</span>`:"";
+    return `<button class="tcard${u?" ph":""}" data-act="open" data-id="${esc(t.id)}" style="${shade(u,.05,.6)}">
+      ${chip}<span class="arrow" aria-hidden="true">→</span>
+      <h3>${esc(t.titulo||"Viaje sin título")} ${t.ejemplo?'<span class="ex">EJEMPLO</span>':""}</h3>
+      <span class="sub">${esc(t.cliente||"Sin cliente")}</span>
+      <span class="sub">${t.inicio?fmt(t.inicio,{day:"numeric",month:"short",year:"numeric"}):"Fechas por definir"}</span></button>`}).join("")+"</div>";
+  $m.innerHTML=`
+    <header class="brandtop"><button class="gear" style="right:36px" onclick="__logout()" aria-label="Salir" title="Salir"><svg class="icon" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button><button class="gear" data-act="perfil" aria-label="Ajustes · Mi perfil" title="Ajustes"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><b>${esc(P.marca||P.nombre)}</b><span>${esc(P.marca?P.nombre:"Viajes a la medida")}</span></header>
+    <div class="hello"><h2>Hola, ${esc((P.nombre||"").split(" ")[0]||"Carlota")}</h2><p class="note">${S.trips.length} ${S.trips.length===1?"viaje":"viajes"}</p></div>
+    <div class="row" style="justify-content:center"><button class="primary" data-act="new" ${db?"":"disabled"}>Nuevo viaje</button><span class="btn filebtn">${S.impTrip||"Importar de Claude"}<input id="f-imptrip" type="file" accept="application/json,.json" aria-label="Importar viaje"></span></div>
+    <input class="search" id="q" type="search" placeholder="Buscar por cliente o destino" value="${esc(S.q)}" aria-label="Buscar">
+    <div class="tabsline" role="tablist"><button role="tab" data-act="htab" data-k="activos" aria-selected="${S.homeTab==="activos"}">Activos · ${act.length}</button><button role="tab" data-act="htab" data-k="pasados" aria-selected="${S.homeTab==="pasados"}">Pasados · ${pas.length}</button></div>
+    ${body}`;
+}
+
+/* ================= perfil ================= */
+function renderPerfil(){
+  const P=S.perfil;const f=(k,l,ph,type)=>`<label class="f">${l}<input id="p-${k}" data-pf="${k}" value="${esc(P[k])}" ${ph?`placeholder="${esc(ph)}"`:""} ${type?`type="${type}"`:""}></label>`;
+  $m.innerHTML=`<div class="spread" style="padding-top:16px"><button class="ghost" data-act="home">← Mis viajes</button></div>
+  <div class="stack"><div class="eyebrow">Mi perfil</div><h2>Así apareces en cada viaje</h2>
+  <p class="note">Estos datos salen en el encabezado, en la tarjeta de contacto de emergencia y al final de cada itinerario.</p></div>
+  <div class="stack">${f("nombre","Nombre")}${f("titulo","Título","Travel Designer")}${f("marca","Marca (opcional)","Ej. un nombre para tu servicio")}
+  <div class="grid2">${f("tel","Teléfono","+52 55 …","tel")}${f("whatsapp","WhatsApp","+52 55 …","tel")}</div>${f("email","Correo","","email")}</div>
+  <div class="row"><button class="primary" data-act="saveperfil">Guardar perfil</button><span class="note">${S.perfilMsg}</span></div>`;
+}
+
+/* ================= editor ================= */
+function itemSummary(it){
+  if(it.tipo==="vuelo") return [it.sale?.lugar&&it.llega?.lugar?it.sale.lugar+" → "+it.llega.lugar:"",it.llega?.hora?"Llega "+it.llega.hora:""].filter(Boolean).join(" · ");
+  if(it.tipo==="hotel") return [it.ciudad,it.hasta?"hasta el "+fmt(it.hasta):"",it.habitacion].filter(Boolean).join(" · ");
+  return [it.ciudad,it.lugar].filter(Boolean).join(" · ");
+}
+function itemView(it){
+  return `<div class="eitem"><div class="h">${esc(it.hora||"")}</div><div style="min-width:0">
+    <div class="k">${TIPOS[it.tipo]||"Nota"}${it.lat!=null?' · <span class="ok">en mapa</span>':""}</div><div class="ti">${esc(it.titulo||"Sin título")}</div>
+    ${itemSummary(it)?`<div class="d">${esc(itemSummary(it))}</div>`:""}${it.conf?`<div class="d mono">Conf. ${esc(it.conf)}</div>`:""}${(it.fotos||[]).length?`<div class="d">${it.fotos.length} fotos</div>`:""}</div>
+    <button class="ghost" data-act="edititem" data-id="${esc(it.id)}">Editar</button></div>`;
+}
+function fld(it,path,label,opt={}){
+  const v=getP(it,path)??"";const id="it-"+path.replace(".","-")+"-"+it.id;
+  if(opt.area) return `<label class="f">${label}<textarea id="${id}" data-if="${path}" placeholder="${esc(opt.ph||"")}">${esc(v)}</textarea></label>`;
+  return `<label class="f">${label}<input id="${id}" data-if="${path}" ${opt.type?`type="${opt.type}"`:""} value="${esc(v)}" placeholder="${esc(opt.ph||"")}"></label>`;
+}
+function itemForm(it){
+  const o=Object.entries(TIPOS).map(([k,v])=>`<option value="${k}" ${it.tipo===k?"selected":""}>${v}</option>`).join("");
+  let body="";
+  if(it.tipo==="vuelo") body=`${fld(it,"titulo","Aerolínea y número",{ph:"Aeroméxico AM 0058"})}
+    <div class="eyebrow">Salida</div><div class="grid3">${fld(it,"hora","Hora",{type:"time"})}${fld(it,"sale.lugar","Aeropuerto",{ph:"Ciudad de México (MEX)"})}${fld(it,"sale.terminal","Terminal")}</div>
+    <div class="eyebrow">Llegada</div><div class="grid2">${fld(it,"llega.hora","Hora",{type:"time"})}${fld(it,"llega.fecha","Fecha",{type:"date"})}</div><div class="grid2">${fld(it,"llega.lugar","Aeropuerto",{ph:"Tokio Narita (NRT)"})}${fld(it,"llega.terminal","Terminal")}</div>
+    <div class="grid2">${fld(it,"conf","Localizador")}${fld(it,"asientos","Asientos o clase")}</div>${fld(it,"detalle","Notas",{area:1})}`;
+  else if(it.tipo==="hotel") body=`${fld(it,"titulo","Hotel",{ph:"Aman Tokyo"})}
+    <div class="grid2">${fld(it,"ciudad","Ciudad o región")}${fld(it,"hasta","Check-out",{type:"date"})}</div>
+    <div class="grid3">${fld(it,"hora","Check-in",{type:"time"})}${fld(it,"salidaHora","Salida del hotel",{type:"time"})}${fld(it,"cuartos","Cuartos",{ph:"1"})}</div>
+    ${fld(it,"habitacion","Tipo de habitación",{ph:"Deluxe Suite · King"})}${fld(it,"huespedes","Huéspedes",{ph:"Nombres como en la reserva"})}
+    ${fld(it,"lugar","Dirección")}<div class="grid2">${fld(it,"telefono","Teléfono del hotel",{type:"tel"})}${fld(it,"conf","Confirmación")}</div>${fld(it,"detalle","Beneficios y notas",{area:1,ph:"Desayuno incluido, crédito de 100 USD…"})}`;
+  else body=`${fld(it,"titulo","Título")}<div class="grid2">${fld(it,"hora","Hora",{type:"time"})}${fld(it,"ciudad","Ciudad")}</div>
+    ${fld(it,"lugar","Lugar o dirección")}<div class="grid2">${fld(it,"telefono","Teléfono",{type:"tel"})}${fld(it,"conf","Confirmación")}</div>${fld(it,"detalle","Detalles para el cliente",{area:1})}${fld(it,"vestimenta","Código de vestimenta",{ph:"Smart casual, llevar suéter…"})}`;
+  return `<div class="iform" data-item="${esc(it.id)}"><label class="f">Tipo<select id="it-tipo-${esc(it.id)}" data-if="tipo">${o}</select></label>${body}
+    <div class="eyebrow">Fotos</div><div class="ethumbs">${(it.fotos||[]).map((f,j)=>`<div class="th" style="background-image:${cssUrl(fotoUrl(f))}"><button data-act="itdelfoto" data-id="${esc(it.id)}" data-j="${j}" aria-label="Quitar foto">×</button></div>`).join("")}</div>
+    ${assets?`<div><span class="btn filebtn">${S.galBusy?"Subiendo…":"Agregar fotos"}<input id="it-fotos-${esc(it.id)}" data-itfotos="${esc(it.id)}" type="file" accept="image/*" multiple aria-label="Agregar fotos"></span></div>`:""}
+    <div class="spread"><button class="danger" data-act="delitem" data-id="${esc(it.id)}">Borrar</button><button class="primary" data-act="doneitem">Listo</button></div></div>`;
+}
+function renderEditor(){
+  const t=S.cur,u=photoUrl(t);
+  const dias=(t.dias||[]).map((d,i)=>`<div class="day"><div class="dh"><span class="dn">Día ${i+1} · ${fmt(d.fecha,{weekday:"short",day:"numeric",month:"short"})}</span>
+    <input class="dt" id="dt-${d.fecha}" data-dt="${d.fecha}" value="${esc(d.titulo)}" placeholder="Ciudad o tema del día" aria-label="Título del día ${i+1}"></div>
+    ${(d.fotos||[]).length?`<div class="ethumbs">${d.fotos.map((f,j)=>`<div class="th" style="background-image:${cssUrl(fotoUrl(f))}"><button data-act="daydelfoto" data-f="${d.fecha}" data-j="${j}" aria-label="Quitar foto">×</button></div>`).join("")}</div>`:""}
+    ${(d.items||[]).map(it=>S.editItem===it.id?itemForm(it):itemView(it)).join("")}
+    <div class="row"><button class="ghost" data-act="additem" data-fecha="${d.fecha}">+ Añadir al día</button>${assets?`<span class="btn filebtn" style="border-color:transparent;background:transparent;color:var(--muted)">+ Fotos del día<input id="day-fotos-${d.fecha}" data-dayfotos="${d.fecha}" type="file" accept="image/*" multiple aria-label="Fotos del día"></span>`:""}</div></div>`).join("");
+  const docs=(t.docs||[]).map((d,i)=>`<div class="docrow">${I.doc}<input id="doc-${i}" data-doc="${i}" value="${esc(d.nombre)}" aria-label="Nombre del documento"><button class="ghost" data-act="deldoc" data-i="${i}">Quitar</button></div>`).join("");
+  const contactos=(t.contactos||[]).map((c,i)=>`<div class="grid3"><label class="f">Nombre<input id="c-n-${i}" data-c="${i}" data-cf="nombre" value="${esc(c.nombre)}"></label>
+    <label class="f">Rol<input id="c-r-${i}" data-c="${i}" data-cf="rol" value="${esc(c.rol)}" placeholder="Guía, chofer…"></label>
+    <label class="f">Teléfono<input id="c-t-${i}" data-c="${i}" data-cf="tel" value="${esc(c.tel)}" type="tel"></label></div><div><button class="ghost" data-act="delc" data-i="${i}">Quitar contacto</button></div>`).join("");
+  const sinUbic=allItems(t).filter(i=>["hotel","restaurante","actividad"].includes(i.tipo)&&i.lat==null&&i.titulo).length;
+  $m.innerHTML=`<div class="spread" style="padding-top:16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--paper);z-index:4;padding-bottom:8px">
+      <button class="ghost" data-act="home">← Mis viajes</button><span class="note" id="saveState"></span><button class="primary" data-act="preview">Ver como cliente</button></div>
+    <div class="stack">
+      <label class="f">Destino o nombre del viaje<input id="f-titulo" data-f="titulo" value="${esc(t.titulo)}" placeholder="Japón en primavera"></label>
+      <div class="grid2"><label class="f">Viajeros<input id="f-cliente" data-f="cliente" value="${esc(t.cliente)}" placeholder="Mariana & Mario"></label>
+      <label class="f">Correos de los clientes<input id="f-email" data-f="email" type="email" value="${esc(t.email)}" placeholder="Correos separados por coma"></label></div>
+      <div class="grid2"><label class="f">Llegada<input id="f-inicio" data-f="inicio" type="date" value="${esc(t.inicio)}"></label>
+      <label class="f">Regreso<input id="f-fin" data-f="fin" type="date" value="${esc(t.fin)}"></label></div>
+      <label class="f">Mensaje de bienvenida<textarea id="f-intro" data-f="intro" placeholder="Unas líneas para abrir el viaje">${esc(t.intro)}</textarea></label>
+      <label class="f">Saludo de bienvenida<input id="f-saludo" data-f="saludo" value="${esc(t.saludo)}" placeholder="Bienvenidas, Pinks · si lo dejas vacío uso el nombre del cliente"></label>
+      <label class="f">Etapa<select id="f-fase" data-f="fase">${[["inspiracion","Lookbook · inspirando"],["propuesta","Propuesta · cotizando"],["confirmado","Confirmado · itinerario final"]].map(([k,l])=>`<option value="${k}" ${(t.fase||"confirmado")===k?"selected":""}>${l}</option>`).join("")}</select></label>
+    </div>
+    <div class="sec"><div class="eyebrow">Foto de portada</div>
+      <div class="photo-prev${u?" has":""}" style="${u?"background-image:"+cssUrl(u):""}">${S.photoBusy?"Subiendo foto…":"Elige una foto del destino. Se ve mejor horizontal."}</div>
+      <div class="row">${assets?`<span class="btn filebtn">${u?"Cambiar foto":"Elegir foto"}<input id="f-foto" type="file" accept="image/*" aria-label="Elegir foto de portada"></span>${u?'<button class="ghost" data-act="nofoto">Quitar foto</button>':""}`:'<span class="note">Las fotos se suben al abrir la página desde claude.ai.</span>'}<span class="note">${S.photoMsg}</span></div></div>
+    ${lookbookEditorHTML(t)}
+    ${extrasEditorHTML(t)}
+    ${tradEditorHTML(t)}
+    <div class="sec"><div><div class="eyebrow">Importar con Claude</div><p class="note" style="margin-top:4px">Pega una confirmación de hotel, boleto, reserva de restaurante o el programa del operador. Lo acomodo en el día que corresponde, con todos sus datos.</p></div>
+      <textarea id="imp" placeholder="Pega aquí la confirmación"></textarea>
+      <div class="row"><button class="primary" data-act="import" ${S.impBusy?"disabled":""}>${S.impBusy?"Leyendo…":"Leer confirmación"}</button><span class="note">${S.impMsg}</span></div></div>
+    <div class="sec"><div class="spread"><div class="eyebrow">Día a día</div>${sinUbic?`<button class="mini" data-act="locate" ${S.locBusy?"disabled":""}>${S.locBusy?"Ubicando…":"Ubicar "+sinUbic+" en el mapa"}</button>`:""}</div>${dias||'<p class="note">Pon las fechas de llegada y regreso para crear los días.</p>'}</div>
+    <div class="sec"><div class="eyebrow">Documentos</div><p class="note">Pasaportes, boletos, vouchers o seguro. El cliente los podrá ver y descargar.</p>
+      ${docs}<div class="row">${assets?`<span class="btn filebtn">${S.docBusy?"Subiendo…":"Subir documento"}<input id="f-doc" type="file" accept="application/pdf,image/*" aria-label="Subir documento"></span>`:""}<span class="note">${S.docMsg}</span></div></div>
+    <div class="sec"><div class="eyebrow">Otros contactos para el cliente</div><p class="note">Tu contacto ya sale siempre. Aquí van guías, choferes u operadores locales.</p>${contactos}<div><button class="ghost" data-act="addc">+ Añadir contacto</button></div></div>
+    <div class="sec">${S.confirmDel?`<div class="banner"><span>¿Borrar este viaje para siempre?</span><span class="row"><button data-act="nodel">Cancelar</button><button class="danger" data-act="yesdel">Borrar</button></span></div>`:'<div><button class="danger" data-act="del">Borrar viaje</button></div>'}</div>`;
+}
+
+/* ================= vista cliente ================= */
+const LOC={es:"es-MX",en:"en-US",fr:"fr-FR"};
+const LANGN={es:"Español",en:"English",fr:"Français"};
+const DICT={
+ es:{bienv:"Bienvenidos",empieza:"Tu viaje empieza en",dias:"días",horas:"horas",minutos:"minutos",deviaje:"Estás de viaje",deN:"de {n} días",gracias:"Gracias por viajar conmigo",prep:"Preparado para {c}",entrar:"Entrar",tuviaje:"Tu viaje",
+  mapa:"Mapa",resumen:"Resumen",itinerario:"Itinerario",vuelos:"Vuelos",hoteles:"Hoteles",restaurantes:"Restaurantes",documentos:"Documentos",calendario:"Calendario",inspiracion:"Inspiración",galeria:"Galería",hoy:"Hoy",info:"Información",recs:"Recomendaciones",antes:"Antes de salir",horaloc:"Hora local",horacdmx:"En México",ahora:"Lo que sigue",en:"En",manana:"Mañana",verit:"Ver todo el itinerario",faltan:"Faltan {n} días",hoyaqui:"Durante el viaje, aquí verás lo que sigue cada día.",noinfo:"Pronto aparecerá aquí la información práctica.",norecs:"Pronto aparecerán aquí mis recomendaciones.",recsintro:"Lugares que les recomiendo y que no están reservados. Toquen Maps para llegar.",nochk:"Sin pendientes por ahora.",chkintro:"Palomea lo que ya tengas listo.",
+  salida:"Salida",llegada:"Llegada",terminal:"Terminal",localiz:"Localizador",conf:"Conf",noche:"noche",noches:"noches",cuarto:"cuarto",cuartos:"cuartos",checkout:"Check-out",salidade:"Salida de {h}",
+  dia:"Día",libre:"Día libre para disfrutar a su ritmo.",novuelos:"Aún no hay vuelos en este viaje.",nohoteles:"Aún no hay hoteles en este viaje.",norest:"Aún no hay restaurantes reservados.",nodocs:"Aquí aparecerán tus boletos, vouchers y documentos.",
+  nofechas:"Faltan las fechas del viaje.",ruta:"Tu ruta",contloc:"Contactos locales",ver:"Ver",descargar:"Descargar",vermaps:"Ver en Maps ›",nomapa:"El mapa de tu ruta aparecerá aquí.",
+  agregarcal:"Agregar a mi calendario",leyenda:"Vuelos, traslados, actividades o reservas",wd:["L","M","M","J","V","S","D"],
+  habla:"Habla con {n}",dispo:"Disponible 24/7 durante tu viaje",cerrar:"Cerrar",copiar:"Copiar",copiado:"Copiado.",tel:"Teléfono",correo:"Correo",abrir:"Abrir",pronto:"Pronto aparecerán aquí los datos de contacto.",
+  curado:"Itinerario curado por",lbcurado:"Lookbook curado por",realidad:"¿Lo hacemos realidad?",cuentenme:"Cuéntenme qué les enamoró y armo la propuesta a su medida.",para:"Para {c}",tuproximo:"Tu próximo viaje",
+  t_vuelo:"Vuelo",t_hotel:"Hotel",t_traslado:"Traslado",t_actividad:"Actividad",t_restaurante:"Restaurante",t_nota:"Nota",
+  b_destino:"Destino",b_hotel:"Hotel",b_experiencia:"Experiencia",b_gastronomia:"Gastronomía"},
+ en:{bienv:"Welcome",empieza:"Your journey begins in",dias:"days",horas:"hours",minutos:"minutes",deviaje:"You are traveling",deN:"of {n} days",gracias:"Thank you for traveling with me",prep:"Prepared for {c}",entrar:"Enter",tuviaje:"Your trip",
+  mapa:"Map",resumen:"Overview",itinerario:"Itinerary",vuelos:"Flights",hoteles:"Hotels",restaurantes:"Restaurants",documentos:"Documents",calendario:"Calendar",inspiracion:"Inspiration",galeria:"Gallery",hoy:"Today",info:"Essentials",recs:"Recommendations",antes:"Before you go",horaloc:"Local time",horacdmx:"In Mexico",ahora:"Up next",en:"In",manana:"Tomorrow",verit:"See the full itinerary",faltan:"{n} days to go",hoyaqui:"During your trip, this is where you will see what comes next each day.",noinfo:"Practical information will appear here soon.",norecs:"My recommendations will appear here soon.",recsintro:"Places I recommend that are not booked. Tap Maps for directions.",nochk:"Nothing pending for now.",chkintro:"Tick off what you already have ready.",
+  salida:"Departure",llegada:"Arrival",terminal:"Terminal",localiz:"Booking ref",conf:"Conf",noche:"night",noches:"nights",cuarto:"room",cuartos:"rooms",checkout:"Check-out",salidade:"Check-out, {h}",
+  dia:"Day",libre:"A free day to enjoy at your own pace.",novuelos:"No flights in this trip yet.",nohoteles:"No hotels in this trip yet.",norest:"No restaurant reservations yet.",nodocs:"Your tickets, vouchers and documents will appear here.",
+  nofechas:"Trip dates are missing.",ruta:"Your route",contloc:"Local contacts",ver:"View",descargar:"Download",vermaps:"Open in Maps ›",nomapa:"Your route map will appear here.",
+  agregarcal:"Add to my calendar",leyenda:"Flights, transfers, activities or reservations",wd:["M","T","W","T","F","S","S"],
+  habla:"Talk to {n}",dispo:"Available 24/7 during your trip",cerrar:"Close",copiar:"Copy",copiado:"Copied.",tel:"Phone",correo:"Email",abrir:"Open",pronto:"Contact details will appear here soon.",
+  curado:"Itinerary curated by",lbcurado:"Lookbook curated by",realidad:"Shall we make it happen?",cuentenme:"Tell me what you fell in love with and I will design the proposal around you.",para:"For {c}",tuproximo:"Your next journey",
+  t_vuelo:"Flight",t_hotel:"Hotel",t_traslado:"Transfer",t_actividad:"Activity",t_restaurante:"Restaurant",t_nota:"Note",
+  b_destino:"Destination",b_hotel:"Hotel",b_experiencia:"Experience",b_gastronomia:"Gastronomy"},
+ fr:{bienv:"Bienvenue",empieza:"Votre voyage commence dans",dias:"jours",horas:"heures",minutos:"minutes",deviaje:"Vous êtes en voyage",deN:"sur {n} jours",gracias:"Merci d'avoir voyagé avec moi",prep:"Préparé pour {c}",entrar:"Entrer",tuviaje:"Votre voyage",
+  mapa:"Carte",resumen:"Aperçu",itinerario:"Itinéraire",vuelos:"Vols",hoteles:"Hôtels",restaurantes:"Restaurants",documentos:"Documents",calendario:"Calendrier",inspiracion:"Inspiration",galeria:"Galerie",hoy:"Aujourd'hui",info:"Infos pratiques",recs:"Recommandations",antes:"Avant le départ",horaloc:"Heure locale",horacdmx:"Au Mexique",ahora:"À suivre",en:"Dans",manana:"Demain",verit:"Voir tout l'itinéraire",faltan:"Plus que {n} jours",hoyaqui:"Pendant votre voyage, vous verrez ici la suite de chaque journée.",noinfo:"Les infos pratiques apparaîtront ici bientôt.",norecs:"Mes recommandations apparaîtront ici bientôt.",recsintro:"Des adresses que je vous recommande, sans réservation. Touchez Maps pour l'itinéraire.",nochk:"Rien en attente pour le moment.",chkintro:"Cochez ce qui est déjà prêt.",
+  salida:"Départ",llegada:"Arrivée",terminal:"Terminal",localiz:"Réservation",conf:"Conf",noche:"nuit",noches:"nuits",cuarto:"chambre",cuartos:"chambres",checkout:"Départ",salidade:"Départ de {h}",
+  dia:"Jour",libre:"Journée libre, à votre rythme.",novuelos:"Pas encore de vols pour ce voyage.",nohoteles:"Pas encore d'hôtels pour ce voyage.",norest:"Pas encore de restaurants réservés.",nodocs:"Vos billets, bons et documents apparaîtront ici.",
+  nofechas:"Les dates du voyage manquent.",ruta:"Votre parcours",contloc:"Contacts sur place",ver:"Voir",descargar:"Télécharger",vermaps:"Voir sur Maps ›",nomapa:"La carte de votre parcours apparaîtra ici.",
+  agregarcal:"Ajouter à mon calendrier",leyenda:"Vols, transferts, activités ou réservations",wd:["L","M","M","J","V","S","D"],
+  habla:"Parler à {n}",dispo:"Disponible 24h/24 pendant votre voyage",cerrar:"Fermer",copiar:"Copier",copiado:"Copié.",tel:"Téléphone",correo:"E-mail",abrir:"Ouvrir",pronto:"Les coordonnées apparaîtront ici bientôt.",
+  curado:"Itinéraire conçu par",lbcurado:"Lookbook conçu par",realidad:"On le réalise ?",cuentenme:"Dites-moi ce qui vous a séduits et je prépare une proposition sur mesure.",para:"Pour {c}",tuproximo:"Votre prochain voyage",
+  t_vuelo:"Vol",t_hotel:"Hôtel",t_traslado:"Transfert",t_actividad:"Activité",t_restaurante:"Restaurant",t_nota:"Note",
+  b_destino:"Destination",b_hotel:"Hôtel",b_experiencia:"Expérience",b_gastronomia:"Gastronomie"}
+};
+const L=(k,v)=>{let s=(DICT[S.lang]||DICT.es)[k];if(s==null)s=DICT.es[k];if(s==null)s=k;if(v)Object.entries(v).forEach(([a,b])=>{s=s.replace("{"+a+"}",b)});return s};
+const TT=tipo=>L("t_"+tipo);
+
+/* textos traducibles de un viaje: lo que se envía a traducir */
+function trSource(t){
+  const o={t:{},d:{},i:{},b:{},c:{}};
+  ["titulo","intro","saludo"].forEach(k=>{if(t[k])o.t[k]=t[k]});
+  if(t.lookbook?.frase)o.t.frase=t.lookbook.frase;
+  (t.dias||[]).forEach(d=>{if(d.titulo)o.d[d.fecha]=d.titulo;(d.items||[]).forEach(it=>{const x={};
+    if(it.tipo!=="hotel"&&it.tipo!=="vuelo"&&it.titulo)x.titulo=it.titulo;
+    ["detalle","habitacion","asientos","vestimenta"].forEach(k=>{if(it[k])x[k]=it[k]});if(Object.keys(x).length)o.i[it.id]=x})});
+  lbBlocks(t).forEach(b=>{const x={};["titulo","texto"].forEach(k=>{if(b[k])x[k]=b[k]});if(Object.keys(x).length)o.b[b.id]=x});
+  (t.contactos||[]).forEach((c,i)=>{if(c.rol)o.c[i]={rol:c.rol}});
+  (t.info||[]).forEach((x,i)=>{if(x.titulo||x.texto){o.n=o.n||{};o.n[i]={titulo:x.titulo||"",texto:x.texto||""}}});
+  (t.recs||[]).forEach((x,i)=>{if(x.tipo||x.nota){o.r=o.r||{};o.r[i]={tipo:x.tipo||"",nota:x.nota||""}}});
+  (t.checklist||[]).forEach(x=>{if(x.t){o.k=o.k||{};o.k[x.id]=x.t}});
+  return o;
+}
+function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)}
+const trHash=t=>hashStr(JSON.stringify(trSource(t)));
+const langsOf=t=>["es",...["en","fr"].filter(l=>t.trad&&t.trad[l])];
+function loc(t){
+  if(!S.lang||S.lang==="es"||!t.trad||!t.trad[S.lang])return t;
+  const tr=t.trad[S.lang].data||{};const c=JSON.parse(JSON.stringify(t));
+  Object.assign(c,{titulo:tr.t?.titulo||c.titulo,intro:tr.t?.intro||c.intro,saludo:tr.t?.saludo||c.saludo});
+  if(c.lookbook&&tr.t?.frase)c.lookbook.frase=tr.t.frase;
+  (c.dias||[]).forEach(d=>{if(tr.d?.[d.fecha])d.titulo=tr.d[d.fecha];(d.items||[]).forEach(it=>{const x=tr.i?.[it.id];if(x)Object.assign(it,x)})});
+  (c.lookbook?.bloques||[]).forEach(b=>{const x=tr.b?.[b.id];if(x)Object.assign(b,x)});
+  (c.contactos||[]).forEach((k,i)=>{const x=tr.c?.[i];if(x)Object.assign(k,x)});
+  (c.info||[]).forEach((k,i)=>{const x=tr.n?.[i];if(x)Object.assign(k,x)});
+  (c.recs||[]).forEach((k,i)=>{const x=tr.r?.[i];if(x)Object.assign(k,x)});
+  (c.checklist||[]).forEach(k=>{const x=tr.k?.[k.id];if(x)k.t=x});
+  return c;
+}
+function langSwitch(t){
+  const ls=langsOf(t);if(ls.length<2)return "";
+  return `<span class="langsw" role="group" aria-label="Idioma">${ls.map(l=>`<button data-act="lang" data-l="${l}" aria-pressed="${(S.lang||"es")===l}">${l.toUpperCase()}</button>`).join("")}</span>`;
+}
+
+function countdown(t){
+  const fl=allItems(t).filter(i=>i.tipo==="vuelo").sort(byTime)[0];
+  const [h,mi]=(fl&&fl.fecha===t.inicio&&fl.hora?fl.hora:"00:00").split(":").map(Number);
+  const d=parse(t.inicio);d.setHours(h||0,mi||0,0,0);return d-new Date();
+}
+function welcomeHTML(t){
+  const u=photoUrl(t),P=S.perfil,e=estado(t);let box;
+  if(e==="proximos"&&t.inicio){const ms=Math.max(0,countdown(t));const D=Math.floor(ms/864e5),H=Math.floor(ms%864e5/36e5),M=Math.floor(ms%36e5/6e4);
+    box=`<div class="countbox"><span class="lbl">${L("empieza")}</span><div class="nums"><div><b id="cd-d">${D}</b><span>${L("dias")}</span></div><b>:</b><div><b id="cd-h">${H}</b><span>${L("horas")}</span></div><b>:</b><div><b id="cd-m">${M}</b><span>${L("minutos")}</span></div></div></div>`}
+  else if(e==="curso") box=`<div class="countbox"><span class="lbl">${L("deviaje")}</span><div class="nums"><div><b>${ndays(t.inicio,hoy)+1}</b><span>${L("deN",{n:ndays(t.inicio,t.fin)+1})}</span></div></div></div>`;
+  else box=`<div class="countbox"><span class="lbl">${L("gracias")}</span></div>`;
+  const partes=(t.cliente||"").split(/\s*(?:,|&|\sy\s|\sand\s|\set\s)\s*/).filter(Boolean);const nombre=partes.length===1?partes[0].trim():"";
+  return `<section class="welcome${u?" ph":""}" style="${shade(u,.25,.55)}">
+    <div class="spread"><span class="hi">${t.saludo?esc(t.saludo).replace(/,\s*(.+)$/,", <i>$1</i>"):L("bienv")+(nombre?", <i>"+esc(nombre)+"</i>":"")}</span><span class="row" style="gap:10px">${langSwitch(S.cur)}<span class="eyebrow" style="color:inherit">${esc(P.marca||P.nombre)}</span></span></div>
+    ${box}
+    <div class="mid"><h1>${esc(t.titulo||L("tuviaje"))}</h1>${t.cliente?`<p>${esc(L("prep",{c:t.cliente}))}</p>`:""}</div>
+    <button class="enter" data-act="enter">${L("entrar")}</button></section>`;
+}
+function flightCard(f){
+  const ff=s=>fmt(s,{day:"numeric",month:"short",year:"numeric"});
+  return `<article class="card fl"><div class="tt">${I.plane}<span>${esc(f.titulo||TT("vuelo"))}</span></div>
+    <div class="legs"><div><div class="eyebrow">${L("salida")}</div><b>${esc(f.hora||"--:--")}</b>${ff(f.fecha)}<br>${esc(f.sale?.lugar||"")}${f.sale?.terminal?"<br>"+L("terminal")+" "+esc(f.sale.terminal):""}</div>
+    <div><div class="eyebrow">${L("llegada")}</div><b>${esc(f.llega?.hora||"--:--")}</b>${ff(f.llega?.fecha||f.fecha)}<br>${esc(f.llega?.lugar||"")}${f.llega?.terminal?"<br>"+L("terminal")+" "+esc(f.llega.terminal):""}</div></div>
+    ${f.asientos?`<p class="note">${esc(f.asientos)}</p>`:""}${f.detalle?`<p class="note">${esc(f.detalle)}</p>`:""}
+    ${confHTML(f.conf,L("localiz"))}</article>`;
+}
+const nN=n=>n+" "+(n===1?L("noche"):L("noches"));
+const nC=c=>esc(c)+" "+(String(c)==="1"?L("cuarto"):L("cuartos"));
+function hotelCard(h){
+  const n=h.hasta?ndays(h.fecha,h.hasta):0;
+  return `<article class="card">${heroImg(h.fotos,h.titulo,"hhero")}${h.ciudad?`<div class="eyebrow" style="color:var(--muted)">${esc(h.ciudad)}</div>`:""}<h3>${esc(h.titulo||TT("hotel"))}</h3>
+    <div class="meta-gold">${fmt(h.fecha)}${h.hasta?" — "+fmt(h.hasta):""} <span>${n?"· "+nN(n):""}${h.cuartos?" · "+nC(h.cuartos):""}</span></div>
+    ${h.lugar?`<div class="infoline">${I.pin}<a href="${mapsUrl(h.titulo,h.lugar)}" target="_blank" rel="noopener">${esc(h.lugar)}</a></div>`:""}
+    ${h.telefono?`<div class="infoline">${I.phone}<span class="sel">${esc(h.telefono)}</span></div>`:""}
+    ${h.detalle?`<p class="note">${esc(h.detalle)}</p>`:""}
+    ${h.huespedes||h.habitacion||h.conf?`<div class="guests"><div>${h.huespedes?`<div class="n">${esc(h.huespedes)}</div>`:""}${h.habitacion?`<div class="note">${esc(h.habitacion)}</div>`:""}</div>${confHTML(h.conf)}</div>`:""}</article>`;
+}
+function genericCard(r){
+  return `<article class="card"><div class="meta-gold">${fmt(r.fecha,{weekday:"short",day:"numeric",month:"short"})}${r.hora?" · "+esc(r.hora):""}${r.ciudad?" <span>· "+esc(r.ciudad)+"</span>":""}</div><h3>${esc(r.titulo)}</h3>
+    ${r.lugar?`<div class="infoline">${I.pin}<a href="${mapsUrl(r.titulo,r.lugar)}" target="_blank" rel="noopener">${esc(r.lugar)}</a></div>`:""}
+    ${r.telefono?`<div class="infoline">${I.phone}<span class="sel">${esc(r.telefono)}</span></div>`:""}
+    ${r.detalle?`<p class="note">${esc(r.detalle)}</p>`:""}${DRESS(r)}${photoStrip(r.fotos,r.titulo)}${confHTML(r.conf)}</article>`;
+}
+const STATUS=/^(confirmad|pagad|reservad|pendiente|por confirmar|solicitad)/i;
+function confHTML(c,label){
+  if(!c)return "";
+  if(STATUS.test(String(c).trim())){const pend=/^(pendiente|por confirmar|solicitad)/i.test(String(c).trim());
+    return `<span class="status${pend?" pend":""}">${pend?"":"✓ "}${esc(c)}</span>`}
+  return `<span class="confpill"><small>${(label||L("conf")).toUpperCase()}</small>${esc(c)}</span>`;
+}
+function dayItems(t,d){
+  const out=(d.items||[]).map(it=>({...it,fecha:d.fecha}));
+  hoteles(t).filter(h=>h.hasta===d.fecha).forEach(h=>out.push({tipo:"hotel",hora:h.salidaHora||"",titulo:L("salidade",{h:h.titulo}),_out:1,fecha:d.fecha}));
+  return out.sort((a,b)=>(a.hora||"99").localeCompare(b.hora||"99"));
+}
+function citem(it){
+  if(it.tipo==="vuelo"&&!it._out) return flightCard(it);
+  const sum=it.tipo==="hotel"&&!it._out?[it.ciudad,it.hasta?nN(ndays(it.fecha,it.hasta)):"",it.habitacion].filter(Boolean).join(" · "):[it.ciudad,it.lugar].filter(Boolean).join(" · ");
+  return `<div class="citem"><div class="h">${esc(it.hora||"")}</div><div style="min-width:0"><div class="k">${it._out?L("checkout"):TT(it.tipo)}</div><div class="ti">${esc(it.titulo)}</div>
+    ${sum?`<div class="d">${esc(sum)}</div>`:""}${it.detalle&&!it._out?`<div class="d">${esc(it.detalle)}</div>`:""}${DRESS(it)}${!it._out?photoStrip(it.fotos,it.titulo):""}${!it._out&&it.conf?`<div style="margin-top:6px">${confHTML(it.conf)}</div>`:""}</div></div>`;
+}
+const CTABS=["mapa","resumen","itinerario","vuelos","hoteles","restaurantes","documentos","calendario"];
+function paneHTML(t){
+  const items=allItems(t).sort(byTime);
+  switch(S.cTab){
+  case "inspiracion": return (t.lookbook?.frase?`<p class="intro">${esc(t.lookbook.frase)}</p>`:"")+lookbookBodyHTML(t);
+  case "resumen":{
+    const hs=hoteles(t);const n=t.inicio&&t.fin?ndays(t.inicio,t.fin):0;const ciudades=[...new Set(hs.map(h=>h.ciudad).filter(Boolean))];
+    return `${t.intro?`<p class="intro">${esc(t.intro)}</p>`:""}
+      <div class="sumgrid"><div><b>${n+1}</b><span>${L("dias")}</span></div><div><b>${n}</b><span>${L("noches")}</span></div><div><b>${hs.length}</b><span>${L("hoteles")}</span></div></div>
+      ${ciudades.length?`<p class="note" style="text-align:center">${ciudades.map(esc).join(" · ")}</p>`:""}
+      ${hs.length?`<div class="stack"><div class="eyebrow">${L("ruta")}</div>${hs.map((h,i)=>`<div class="stop"><span class="num">${i+1}</span><div><div class="nm">${esc(h.titulo)}</div><div class="note">${esc(h.ciudad||"")}${h.ciudad?" · ":""}${fmt(h.fecha)}${h.hasta?" – "+fmt(h.hasta):""}</div></div><span></span></div>`).join("")}</div>`:""}
+      ${(t.contactos||[]).filter(c=>c.nombre).length?`<div class="stack"><div class="eyebrow">${L("contloc")}</div>${t.contactos.filter(c=>c.nombre).map(c=>`<div class="spread"><span><b>${esc(c.nombre)}</b> <span class="note">${esc(c.rol)}</span></span><span class="mono sel">${esc(c.tel)}</span></div>`).join("")}</div>`:""}`;}
+  case "itinerario":{
+    const chips=(t.dias||[]).map((d,i)=>`<button data-act="goday" data-i="${i}">${fmt(d.fecha)}</button>`).join("");
+    return `<div class="pills small">${chips}</div>`+(t.dias||[]).map((d,i)=>{const its=dayItems(t,d);
+      return `<section id="day-${i}" class="stack" style="gap:6px;scroll-margin-top:16px"><div class="dayhead"><span class="eyebrow">${L("dia")} ${i+1}${d.titulo?" · "+esc(d.titulo):""}</span><h3>${esc(fmtLargo(d.fecha))}</h3></div>${heroImg(d.fotos,d.titulo||fmtLargo(d.fecha),"dhero")}
+      ${its.length?its.map(citem).join(""):`<p class="note">${L("libre")}</p>`}</section>`}).join("");}
+  case "vuelos":{const fl=items.filter(i=>i.tipo==="vuelo");return fl.length?fl.map(flightCard).join(""):`<div class="empty">${L("novuelos")}</div>`;}
+  case "hoteles":{const hs=hoteles(t);return hs.length?hs.map(hotelCard).join(""):`<div class="empty">${L("nohoteles")}</div>`;}
+  case "restaurantes":{const rs=items.filter(i=>i.tipo==="restaurante");return rs.length?rs.map(genericCard).join(""):`<div class="empty">${L("norest")}</div>`;}
+  case "documentos":{const ds=t.docs||[];return ds.length?ds.map((d,i)=>`<div class="doc">${I.doc}<span class="nm">${esc(d.nombre)}</span><span class="row" style="gap:6px"><a class="btn mini" href="${esc(d.url||"/_blob/"+d.id)}" target="_blank" rel="noopener">${L("ver")}</a>${downloads?`<button class="mini" data-act="dl" data-i="${i}">${L("descargar")}</button>`:""}</span></div>`).join(""):`<div class="empty">${L("nodocs")}</div>`;}
+  case "hoy": return hoyHTML(t);
+  case "info": return infoHTML(t);
+  case "recs": return recsHTML(t);
+  case "antes": return antesHTML(t);
+  case "galeria":{
+    return (t.dias||[]).map((d,i)=>{const fs=[...(d.fotos||[]).map(f=>({url:fotoUrl(f),cap:d.titulo||fmtLargo(d.fecha)})),...(d.items||[]).flatMap(it=>(it.fotos||[]).map(f=>({url:fotoUrl(f),cap:it.titulo})))];
+      if(!fs.length)return "";const k=gal(fs);
+      return `<section class="stack"><div class="dayhead"><span class="eyebrow">${L("dia")} ${i+1}${d.titulo?" · "+esc(d.titulo):""}</span><h3>${esc(fmtLargo(d.fecha))}</h3></div>
+        <div class="galgrid">${fs.map((f,j)=>`<img src="${esc(f.url)}" alt="${esc(f.cap||"")}" loading="lazy" data-act="lbx" data-g="${k}" data-i="${j}">`).join("")}</div></section>`}).join("");}
+  case "calendario": return calHTML(t);
+  case "mapa": return mapHTML(t);
+  }
+  return "";
+}
+function calHTML(t){
+  if(!t.inicio||!t.fin) return `<div class="empty">${L("nofechas")}</div>`;
+  const hs=hoteles(t);const stay={};hs.forEach((h,i)=>{let f=h.fecha;const end=h.hasta||addD(h.fecha,1);while(f<end){stay[f]={i,h,first:f===h.fecha};f=addD(f,1)}});
+  const act={};allItems(t).forEach(i=>{if(i.tipo!=="hotel")act[i.fecha]=1});
+  let html=`<div class="row" style="justify-content:flex-end">${downloads?`<button data-act="ics">${I.cal}${L("agregarcal")}</button>`:""}</div>`;
+  let m=parse(t.inicio);m.setDate(1);const last=parse(t.fin);
+  while(m<=last){
+    const y=m.getFullYear(),mo=m.getMonth();const first=(new Date(y,mo,1).getDay()+6)%7;const dim=new Date(y,mo+1,0).getDate();
+    const name=m.toLocaleDateString(LOC[S.lang]||"es-MX",{month:"long",year:"numeric"});
+    html+=`<h3 style="text-transform:capitalize">${esc(name)}</h3><div class="cal">${L("wd").map(x=>`<div class="wd">${x}</div>`).join("")}`;
+    for(let i=0;i<first;i++)html+="<div></div>";
+    for(let d=1;d<=dim;d++){const f=y+"-"+pad(mo+1)+"-"+pad(d);const inT=f>=t.inicio&&f<=t.fin;const s=stay[f];
+      html+=`<div class="c${inT?" trip":""}${s?(s.i%2?" sb":" sa"):""}"><span class="num">${d}</span>${s&&s.first?`<span class="hn">${esc(s.h.titulo)}</span>`:""}${inT&&act[f]?'<span class="dot"></span>':""}</div>`}
+    html+="</div>";m=new Date(y,mo+1,1);
+  }
+  if(hs.length) html+=`<div class="legend">${hs.map((h,i)=>`<div><span class="sw" style="background:var(${i%2?"--stay-b":"--stay-a"})"></span>${esc(h.titulo)} · ${fmt(h.fecha)}${h.hasta?" – "+fmt(h.hasta):""}</div>`).join("")}<div><span class="sw" style="background:var(--accent);border-radius:50%;width:8px;height:8px"></span>${L("leyenda")}</div></div>`;
+  return html;
+}
+function mapHTML(t){
+  const pts=hoteles(t).filter(h=>h.lat!=null&&h.lng!=null);
+  const list=pts.map((h,i)=>`<div class="stop"><span class="num">${i+1}</span><div style="min-width:0"><div class="nm">${esc(h.titulo)}</div><div class="note">${esc(h.ciudad||"")}${h.ciudad?" · ":""}${fmt(h.fecha)}${h.hasta?" – "+fmt(h.hasta):""}</div></div><a class="btn mini" href="${mapsUrl(h.titulo,h.lugar)}" target="_blank" rel="noopener">${L("vermaps")}</a></div>`).join("");
+  if(!pts.length) return `<div class="empty">${S.owner&&(S.lang||"es")==="es"?"Para ver el mapa, abre el viaje en edición y toca “Ubicar en el mapa”.":L("nomapa")}</div>`;
+  return `<div class="mapbox" id="mapbox"></div>${list}`;
+}
+function drawMap(t){
+  const el=document.getElementById("mapbox");if(!el)return;
+  if(!window.d3||!window.topojson||!window.MUNDO){el.innerHTML='<p class="note">No se pudo cargar el mapa en esta vista.</p>';return}
+  const pts=hoteles(t).filter(h=>h.lat!=null&&h.lng!=null);
+  const lo=d3.extent(pts,p=>+p.lng),la=d3.extent(pts,p=>+p.lat);
+  const span=Math.max(lo[1]-lo[0],la[1]-la[0],3);
+  const cx=(lo[0]+lo[1])/2,cy=(la[0]+la[1])/2;
+  const hx=Math.max((lo[1]-lo[0])/2,span*.32)*1.18,hy=Math.max((la[1]-la[0])/2,span*.24)*1.25;
+  const W=Math.max(300,Math.min(680,Math.round(el.clientWidth||600))),H=Math.round(Math.min(W*1.1,Math.max(W*.66,W*(hy/hx)*1.05)));
+  const box={type:"MultiPoint",coordinates:[[cx-hx,cy-hy],[cx+hx,cy+hy],[cx-hx,cy+hy],[cx+hx,cy-hy]]};
+  const proj=d3.geoMercator().fitExtent([[24,24],[W-24,H-24]],box);const path=d3.geoPath(proj);
+  const land=topojson.feature(MUNDO,MUNDO.objects.countries).features;
+  const xy=pts.map(p=>proj([+p.lng,+p.lat]));
+  /* etiquetas sin encimarse: se prueba cada posición y, si no cabe, con línea guía más lejos */
+  const R=11,placed=[],pins=xy.map(p=>({x:p[0]-R,y:p[1]-R,w:2*R,h:2*R}));
+  const hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+  const labels=xy.map((p,i)=>{
+    const h=pts[i],l1=(h.ciudad||"").slice(0,24),l2=(h.titulo||"").slice(0,28);
+    const w=Math.max(l1.length*7.2,l2.length*5.9)+6,ht=30;
+    const dirs=[[1,0],[-1,0],[0,-1],[0,1],[1,-1],[-1,-1],[1,1],[-1,1]];
+    for(const dist of [16,46,80]){for(const [dx,dy] of dirs){
+      let x=dx>0?p[0]+dist:dx<0?p[0]-dist-w:p[0]-w/2;
+      let y=dy>0?p[1]+dist:dy<0?p[1]-dist-ht:p[1]-ht/2;
+      const r={x,y,w,h:ht};
+      if(x<4||y<4||x+w>W-4||y+ht>H-4)continue;
+      if(placed.some(q=>hit(r,q))||pins.some(q=>hit(r,q)))continue;
+      placed.push(r);return {r,l1,l2,lead:dist>16,ax:dx>0?x:dx<0?x+w:x+w/2,ay:dy>0?y:dy<0?y+ht:y+ht/2,anc:dx>0?"start":dx<0?"end":"middle"};
+    }}
+    return null;
+  });
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(L("mapa"))}"><defs><clipPath id="clipm"><rect width="${W}" height="${H}" rx="14"/></clipPath></defs><g clip-path="url(#clipm)">`;
+  s+=land.map(f=>{const d=path(f);return d?`<path class="land" d="${d}"/>`:""}).join("");
+  if(xy.length>1)s+=`<path class="route" d="${d3.line().curve(d3.curveCatmullRom.alpha(.5))(xy)}"/>`;
+  labels.forEach((lb,i)=>{if(lb&&lb.lead)s+=`<line class="lead" x1="${xy[i][0].toFixed(1)}" y1="${xy[i][1].toFixed(1)}" x2="${lb.ax.toFixed(1)}" y2="${lb.ay.toFixed(1)}"/>`});
+  labels.forEach(lb=>{if(!lb)return;const tx=lb.anc==="start"?lb.r.x+3:lb.anc==="end"?lb.r.x+lb.r.w-3:lb.r.x+lb.r.w/2;
+    s+=`<g class="pin"><text class="lb" x="${tx.toFixed(1)}" y="${(lb.r.y+11).toFixed(1)}" text-anchor="${lb.anc}">${esc(lb.l1)}</text><text class="lb2" x="${tx.toFixed(1)}" y="${(lb.r.y+24).toFixed(1)}" text-anchor="${lb.anc}">${esc(lb.l2)}</text></g>`});
+  xy.forEach((p,i)=>{s+=`<g class="pin" transform="translate(${p[0].toFixed(1)},${p[1].toFixed(1)})"><circle r="9"/><text class="num">${i+1}</text></g>`});
+  s+="</g></svg>";el.innerHTML=s;
+}
+function contactHTML(){
+  const P=S.perfil;const first=(P.nombre||"").split(" ")[0]||"";
+  const fab=`<button class="fab" data-act="sheet">${I.phone}${esc(L("habla",{n:first}))}</button>`;
+  if(!S.sheet) return fab;
+  const wa=(P.whatsapp||"").replace(/\D/g,"");
+  const ln=(l,v,extra)=>v?`<div class="ln"><div><div class="eyebrow">${l}</div><div class="v">${esc(v)}</div></div><span class="row" style="gap:6px">${extra||""}<button class="mini" data-act="copy" data-v="${esc(v)}">${L("copiar")}</button></span></div>`:"";
+  return `<div class="sheetbg" data-act="sheet"></div><section class="sheet" role="dialog" aria-label="${esc(L("habla",{n:first}))}">
+    <div class="spread"><div><div class="eyebrow">${L("dispo")}</div><h3>${esc(P.nombre)}</h3>${P.titulo?`<p class="note">${esc(P.titulo)}</p>`:""}</div><button class="ghost" data-act="sheet">${L("cerrar")}</button></div>
+    ${ln("WhatsApp",P.whatsapp,wa?`<a class="btn mini" href="https://wa.me/${wa}" target="_blank" rel="noopener">${L("abrir")}</a>`:"")}${ln(L("tel"),P.tel)}${ln(L("correo"),P.email)}
+    ${!P.tel&&!P.whatsapp&&!P.email?`<p class="note">${S.owner?"Agrega tus datos en “Mi perfil”.":L("pronto")}</p>`:""}
+    <p class="note" id="copyMsg"></p></section>`;
+}
+function renderCliente(){
+  const t=loc(S.cur),P=S.perfil;
+  const ownerBar=S.owner?`<div class="banner" style="margin-top:12px"><span>Así lo verá ${esc(t.cliente||"tu cliente")}.</span><button data-act="toeditor">Volver a editar</button></div>`:"";
+  if(S.welcome){$m.innerHTML=ownerBar+welcomeHTML(t);startTick(t);return}
+  const u=photoUrl(t),n=t.inicio&&t.fin?ndays(t.inicio,t.fin)+1:0;
+  const hayFotos=(t.dias||[]).some(d=>(d.fotos||[]).length||(d.items||[]).some(it=>(it.fotos||[]).length));
+  let tabs=lbBlocks(t).length?["inspiracion",...CTABS]:[...CTABS];if(hayFotos)tabs.splice(tabs.indexOf("hoteles")+1,0,"galeria");
+  const e_=estado(t);if(e_==="curso"||S.owner)tabs.unshift("hoy");
+  tabs.splice(tabs.indexOf("restaurantes")+1,0,"recs");tabs.splice(tabs.indexOf("documentos"),0,"info");
+  if(e_!=="pasados"&&(t.checklist||[]).length)tabs.splice(tabs.indexOf("info")+1,0,"antes");
+  if(!tabs.includes(S.cTab))S.cTab=tabs.includes("hoy")&&e_==="curso"?"hoy":"itinerario";
+  $m.innerHTML=`${ownerBar}
+    <div class="cbar">${S.owner===false&&S.trips.length>1?`<button class="ghost" data-act="cback">← Mis viajes</button>`:""}<span><b>${esc(P.nombre)}</b>${P.titulo?` <span class="note">· ${esc(P.titulo)}</span>`:""}</span><span class="row" style="gap:10px">${langSwitch(S.cur)}${P.marca?`<span class="brand">${esc(P.marca)}</span>`:""}</span></div>
+    <section class="cover${u?" ph":""}" style="${shade(u,.1,.6)}"><span class="eyebrow">${esc(P.marca||P.nombre)}</span><h1>${esc(t.titulo||L("tuviaje"))}</h1>
+      <span class="sub">${[esc(t.cliente),t.inicio?fmt(t.inicio)+" — "+fmt(t.fin,{day:"numeric",month:"short",year:"numeric"}):"",n?n+" "+L("dias"):""].filter(Boolean).join(" · ")}</span></section>
+    <div class="pills" role="tablist">${tabs.map(k=>`<button role="tab" data-act="ctab" data-k="${k}" aria-selected="${S.cTab===k}">${L(k)}</button>`).join("")}</div>
+    <div class="tabpane">${paneHTML(t)}</div>
+    <footer class="footer"><span class="sign">Bon voyage</span><span>${L("curado")} <b>${esc(P.nombre)}</b></span>${P.marca?`<span>${esc(P.marca)}</span>`:""}</footer>`;
+  $m.insertAdjacentHTML("beforeend",contactHTML()+lbxHTML());
+  if(S.cTab==="mapa")drawMap(t);
+}
+function startTick(t){
+  if(estado(t)!=="proximos")return;
+  tick=setInterval(()=>{const ms=Math.max(0,countdown(t));const a=document.getElementById("cd-d");if(!a){clearInterval(tick);return}
+    a.textContent=Math.floor(ms/864e5);document.getElementById("cd-h").textContent=Math.floor(ms%864e5/36e5);document.getElementById("cd-m").textContent=Math.floor(ms%36e5/6e4)},30000);
+}
+
+/* ================= hoy · info práctica · recomendaciones · antes de salir ================= */
+const ZONAS=["America/Mexico_City","America/Cancun","America/Tijuana","America/New_York","America/Chicago","America/Denver","America/Los_Angeles","America/Bogota","America/Lima","America/Santiago","America/Argentina/Buenos_Aires","America/Sao_Paulo","Europe/London","Europe/Lisbon","Europe/Madrid","Europe/Paris","Europe/Rome","Europe/Berlin","Europe/Amsterdam","Europe/Zurich","Europe/Vienna","Europe/Athens","Europe/Istanbul","Europe/Copenhagen","Europe/Stockholm","Europe/Helsinki","Europe/Oslo","Atlantic/Reykjavik","Africa/Marrakech","Africa/Cairo","Africa/Nairobi","Africa/Johannesburg","Asia/Dubai","Asia/Tashkent","Asia/Kolkata","Asia/Bangkok","Asia/Singapore","Asia/Hong_Kong","Asia/Shanghai","Asia/Seoul","Asia/Tokyo","Australia/Sydney","Pacific/Auckland","Pacific/Tahiti","Pacific/Honolulu"];
+const tzOk=z=>{try{new Intl.DateTimeFormat("en",{timeZone:z});return true}catch(e){return false}};
+function nowIn(z){
+  const p={};new Intl.DateTimeFormat("en-CA",{timeZone:tzOk(z)?z:undefined,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
+  return {fecha:`${p.year}-${p.month}-${p.day}`,hora:`${p.hour}:${p.minute}`};
+}
+const mins=h=>{const [a,b]=(h||"").split(":").map(Number);return isNaN(a)?null:a*60+(b||0)};
+const fmtDur=m=>{const h=Math.floor(m/60),r=m%60;return h?`${h} h${r?" "+r+" min":""}`:`${r} min`};
+function clockHTML(t){
+  const z=t.zona||"America/Mexico_City";if(z==="America/Mexico_City")return "";
+  const a=nowIn(z),b=nowIn("America/Mexico_City");
+  const city=z.split("/").pop().replace(/_/g," ");
+  return `<div class="clock"><div><span class="eyebrow">${L("horaloc")}</span><b class="mono" id="clk-a">${a.hora}</b><span class="note">${esc(t.ciudadZona||city)}</span></div><div><span class="eyebrow">${L("horacdmx")}</span><b class="mono" id="clk-b">${b.hora}</b><span class="note">Ciudad de México</span></div></div>`;
+}
+function hoyHTML(t){
+  const z=t.zona||"America/Mexico_City";let {fecha,hora}=nowIn(z);let preview=false;
+  if((fecha<t.inicio||fecha>t.fin)){
+    if(!S.owner){
+      if(fecha<t.inicio)return `<div class="empty"><h3>${L("faltan",{n:ndays(fecha,t.inicio)})}</h3><p>${L("hoyaqui")}</p></div>`;
+      return `<div class="empty"><h3>${L("gracias")}</h3></div>`;
+    }
+    preview=true;fecha=t.inicio;hora="00:00";
+  }
+  const di=(t.dias||[]).findIndex(d=>d.fecha===fecha);const d=t.dias[di];if(!d)return "";
+  const its=dayItems(t,d);const now=mins(hora);
+  const nextIdx=its.findIndex(it=>{const m=mins(it.hora);return m!=null&&m>=now});
+  const nx=nextIdx>=0?its[nextIdx]:null;
+  const man=(t.dias||[])[di+1];const manIts=man?dayItems(t,man).slice(0,4):[];
+  return `${preview?`<div class="banner"><span>Vista previa: así se verá el día 1 durante el viaje.</span></div>`:""}
+    ${clockHTML(t)}
+    <div class="dayhead"><span class="eyebrow">${L("dia")} ${di+1}${d.titulo?" · "+esc(d.titulo):""}</span><h2>${esc(fmtLargo(d.fecha))}</h2></div>
+    ${nx?`<section class="nextup"><div class="spread"><span class="eyebrow">${L("ahora")}</span>${!preview?`<span class="chip">${L("en")} ${fmtDur(mins(nx.hora)-now)}</span>`:""}</div>${citem(nx)}</section>`:""}
+    ${its.length?its.map((it,i)=>i===nextIdx?"":`<div class="${nx&&i<nextIdx?"done":""}">${citem(it)}</div>`).join(""):`<p class="note">${L("libre")}</p>`}
+    ${man?`<section class="stack" style="gap:6px;margin-top:10px"><div class="dayhead"><span class="eyebrow">${L("manana")}</span><h3>${esc(fmtLargo(man.fecha))}</h3></div>
+      ${manIts.length?manIts.map(it=>`<div class="mini-it"><span class="mono">${esc(it.hora||"")}</span><span>${esc(it._out?L("salidade",{h:it.titulo.replace(/^Salida de |^Check-out, |^Départ de /,"")}):it.titulo)}</span></div>`).join(""):`<p class="note">${L("libre")}</p>`}
+      <button class="ghost" data-act="ctab" data-k="itinerario" style="align-self:flex-start">${L("verit")} ›</button></section>`:""}`;
+}
+function infoHTML(t){
+  const s=(t.info||[]).filter(x=>x.titulo||x.texto);
+  return (clockHTML(t)||"")+(s.length?s.map(x=>`<article class="card"><h3>${esc(x.titulo)}</h3><p class="txt-pre">${esc(x.texto)}</p></article>`).join(""):`<div class="empty">${L("noinfo")}</div>`);
+}
+function recsHTML(t){
+  const rs=(t.recs||[]).filter(r=>r.nombre);if(!rs.length)return `<div class="empty">${L("norecs")}</div>`;
+  const by={};rs.forEach(r=>{(by[r.ciudad||""]=by[r.ciudad||""]||[]).push(r)});
+  return `<p class="note">${L("recsintro")}</p>`+Object.entries(by).map(([c,l])=>`<section class="stack" style="gap:8px">${c?`<h3>${esc(c)}</h3>`:""}
+    ${l.map(r=>`<div class="rec"><div style="min-width:0"><div class="nm">${esc(r.nombre)}</div><div class="note">${[r.tipo,r.nota].filter(Boolean).map(esc).join(" · ")}</div></div><a class="btn mini" href="${mapsUrl(r.nombre,[r.ciudad,t.titulo].filter(Boolean).join(", "))}" target="_blank" rel="noopener">Maps ›</a></div>`).join("")}</section>`).join("");
+}
+function chkKey(t){return "chk-"+t.id}
+function chkState(t){try{return JSON.parse(localStorage.getItem(chkKey(t))||"{}")}catch(e){return {}}}
+function antesHTML(t){
+  const ls=(t.checklist||[]).filter(x=>x.t);if(!ls.length)return `<div class="empty">${L("nochk")}</div>`;
+  const st=chkState(t);const n=ls.filter(x=>st[x.id]).length;
+  return `<div class="spread"><p class="note">${L("chkintro")}</p><span class="chip">${n} / ${ls.length}</span></div>
+    <div class="stack" style="gap:6px">${ls.map(x=>`<label class="chkrow${st[x.id]?" on":""}"><input type="checkbox" id="chk-${esc(x.id)}" data-chk="${esc(x.id)}" ${st[x.id]?"checked":""}><span>${esc(x.t)}</span></label>`).join("")}</div>`;
+}
+const DRESS=it=>it.vestimenta&&!it._out?`<span class="dress">${I.star}${esc(it.vestimenta)}</span>`:"";
+
+/* ---------- editor ---------- */
+const CHK_BASE=["Pasaporte vigente al menos seis meses después del regreso","Visa o permiso de entrada, si aplica","Seguro de viaje","Check-in en línea de los vuelos","Tarjetas avisadas de que viajas y algo de efectivo local","Adaptador de corriente","Medicamentos y receta","Copia digital de pasaporte y reservas","Ropa según el clima y para las cenas"];
+function extrasEditorHTML(t){
+  const zopts=[...new Set([t.zona||"America/Mexico_City",...ZONAS])].map(z=>`<option value="${z}" ${(t.zona||"America/Mexico_City")===z?"selected":""}>${z.replace(/_/g," ")}</option>`).join("");
+  const info=(t.info||[]).map((x,i)=>`<div class="iform"><label class="f">Tema<input id="inf-t-${i}" data-inf="${i}" data-k="titulo" value="${esc(x.titulo)}" placeholder="Moneda y pagos"></label>
+    <label class="f">Texto<textarea id="inf-x-${i}" data-inf="${i}" data-k="texto" style="min-height:96px">${esc(x.texto)}</textarea></label><div><button class="ghost" data-act="delinf" data-i="${i}">Quitar</button></div></div>`).join("");
+  const recs=(t.recs||[]).map((r,i)=>`<div class="iform"><div class="grid2"><label class="f">Nombre<input id="rec-n-${i}" data-rec="${i}" data-k="nombre" value="${esc(r.nombre)}"></label><label class="f">Ciudad<input id="rec-c-${i}" data-rec="${i}" data-k="ciudad" value="${esc(r.ciudad)}"></label></div>
+    <div class="grid2"><label class="f">Tipo<input id="rec-t-${i}" data-rec="${i}" data-k="tipo" value="${esc(r.tipo)}" placeholder="Italiana, bar, museo…"></label><label class="f">Nota<input id="rec-o-${i}" data-rec="${i}" data-k="nota" value="${esc(r.nota)}" placeholder="Pedir mesa en terraza"></label></div>
+    <div><button class="ghost" data-act="delrec" data-i="${i}">Quitar</button></div></div>`).join("");
+  const chk=(t.checklist||[]).map((x,i)=>`<div class="docrow"><span class="note mono">${i+1}</span><input id="ck-${i}" data-ck="${i}" value="${esc(x.t)}" aria-label="Pendiente ${i+1}"><button class="ghost" data-act="delck" data-i="${i}">Quitar</button></div>`).join("");
+  return `<div class="sec"><div class="eyebrow">Hora local</div><p class="note">Para la pantalla “Hoy” y el reloj del destino junto a la hora de México.</p>
+      <label class="f">Zona horaria del destino<select id="f-zona" data-f="zona">${zopts}</select></label></div>
+    <div class="sec"><div class="spread"><div class="eyebrow">Información práctica</div><button class="mini" data-act="infogen" ${S.exBusy?"disabled":""}>${S.exBusy==="info"?"Escribiendo…":"Escribir con Claude"}</button></div>
+      <p class="note">Visa, moneda, enchufes, propinas, clima, qué empacar y seguridad. Claude lo redacta para pasaporte mexicano y tú lo revisas.</p>${info}
+      <div><button class="ghost" data-act="addinf">+ Añadir tema</button></div><span class="note">${S.exMsg.info||""}</span></div>
+    <div class="sec"><div class="eyebrow">Mis recomendaciones</div><p class="note">Lugares que sugieres aunque no estén reservados. Pega tu lista y Claude la acomoda por ciudad.</p>
+      <textarea id="recimp" placeholder="Pega aquí tu lista de recomendaciones"></textarea>
+      <div class="row"><button class="mini" data-act="recimp" ${S.exBusy?"disabled":""}>${S.exBusy==="recs"?"Leyendo…":"Importar lista"}</button><span class="note">${S.exMsg.recs||""}</span></div>
+      ${recs}<div><button class="ghost" data-act="addrec">+ Añadir recomendación</button></div></div>
+    <div class="sec"><div class="spread"><div class="eyebrow">Antes de salir</div>${(t.checklist||[]).length?"":`<button class="mini" data-act="ckbase">Usar lista base</button>`}</div>
+      <p class="note">Tu cliente la palomea desde su celular.</p>${chk}<div><button class="ghost" data-act="addck">+ Añadir pendiente</button></div></div>`;
+}
+async function infoGen(){
+  const t=S.cur;if(!sampleFn){S.exMsg.info='<span class="err">Esta vista no puede usar a Claude.</span>';return render()}
+  S.exBusy="info";S.exMsg.info="";render();
+  const ciudades=[...new Set(hoteles(t).map(h=>h.ciudad).filter(Boolean))].join(", ");
+  try{
+    const r=await sampleFn.json(`Eres una asesora de viajes de lujo en Ciudad de México. Escribe la información práctica para clientes con pasaporte mexicano que viajan a: ${t.titulo}${ciudades?" ("+ciudades+")":""}, del ${t.inicio} al ${t.fin}.
+Responde SOLO JSON: {"zona":"zona horaria IANA principal del destino","secciones":[{"titulo":"…","texto":"…"}]}
+Secciones, en este orden: Documentación (visa y requisitos de entrada para mexicanos; si no estás segura, di que se confirme con el consulado), Clima y qué empacar (para esas fechas), Moneda y pagos (incluye propinas), Horario y electricidad (diferencia con la Ciudad de México, tipo de enchufe y voltaje), Seguridad, Salud (vacunas o recomendaciones si aplican).
+Cada texto de 2 a 4 frases, en español, claro y cálido, sin listas ni signos de exclamación. No inventes cifras exactas que puedan cambiar.`,{modelTier:"complex"});
+    const sec=Array.isArray(r?.secciones)?r.secciones.filter(x=>x&&x.titulo):[];
+    if(!sec.length)throw {code:"invalid_json"};
+    t.info=sec.map(x=>({titulo:String(x.titulo),texto:String(x.texto||"")}));
+    if(r.zona&&tzOk(r.zona)&&(!t.zona||t.zona==="America/Mexico_City"))t.zona=r.zona;
+    S.exMsg.info='<span class="ok">Listo. Revísalo y ajusta lo que quieras.</span>';scheduleSave();
+  }catch(e){S.exMsg.info='<span class="err">'+ERR(e)+"</span>"}
+  S.exBusy=null;render();
+}
+async function recImp(){
+  const t=S.cur;const txt=(document.getElementById("recimp")?.value||"").trim();
+  if(!txt){S.exMsg.recs='<span class="err">Pega primero tu lista.</span>';return render()}
+  if(!sampleFn){S.exMsg.recs='<span class="err">Esta vista no puede usar a Claude.</span>';return render()}
+  S.exBusy="recs";S.exMsg.recs="";render();
+  try{
+    const r=await sampleFn.json(`Convierte esta lista de recomendaciones de viaje en JSON. Responde SOLO: {"recs":[{"nombre":"…","ciudad":"…","tipo":"tipo de cocina o de lugar, corto, en español","nota":"comentario útil y corto si viene en el texto, si no vacío"}]}
+No inventes lugares ni datos. Viaje: ${t.titulo}.
+LISTA:
+${txt.slice(0,12000)}`,{modelTier:"complex"});
+    const rs=(r?.recs||[]).filter(x=>x&&x.nombre).map(x=>({nombre:String(x.nombre),ciudad:String(x.ciudad||""),tipo:String(x.tipo||""),nota:String(x.nota||"")}));
+    t.recs=[...(t.recs||[]),...rs];S.exMsg.recs=`<span class="ok">Agregué ${rs.length} recomendaciones.</span>`;if(rs.length){scheduleSave();const ta=document.getElementById("recimp");if(ta)ta.value=""}
+  }catch(e){S.exMsg.recs='<span class="err">'+ERR(e)+"</span>"}
+  S.exBusy=null;render();
+}
+
+/* ================= traducción ================= */
+function tradEditorHTML(t){
+  const h=trHash(t);
+  const row=l=>{const tr=t.trad&&t.trad[l];const st=!tr?'<span class="note">Sin traducir</span>':tr.hash===h?'<span class="ok">Al día</span>':'<span class="err">Hay cambios sin traducir</span>';
+    const busy=S.trBusy===l;
+    return `<div class="spread" style="padding-block:6px;border-top:1px dashed var(--line)"><span><b>${LANGN[l]}</b> · ${st}</span><span class="row" style="gap:6px">${tr?`<button class="ghost" data-act="trdel" data-l="${l}">Quitar</button>`:""}<button class="${tr&&tr.hash===h?"":"primary"}" data-act="trad" data-l="${l}" ${S.trBusy?"disabled":""}>${busy?"Traduciendo…":tr?"Actualizar":"Traducir"}</button></span></div>`};
+  return `<div class="sec"><div><div class="eyebrow">Idiomas</div><p class="note" style="margin-top:4px">Tu cliente podrá cambiar entre español y los idiomas que traduzcas. Los nombres de hoteles, direcciones y confirmaciones no se tocan.</p></div>
+    ${row("en")}${row("fr")}<span class="note">${S.trMsg||""}</span></div>`;
+}
+async function traducir(l){
+  const t=S.cur;if(!sampleFn){S.trMsg='<span class="err">Esta vista no puede usar a Claude.</span>';return render()}
+  const src=trSource(t);S.trBusy=l;S.trMsg="";render();
+  try{
+    const r=await sampleFn.json(`Traduce al ${l==="en"?"inglés":"francés"} todos los textos de este JSON de un itinerario de viaje de lujo. Conserva exactamente la misma estructura y las mismas claves; traduce solo los valores de texto.
+Estilo: elegante, cálido y natural, como lo escribiría una asesora de viajes de lujo nativa${l==="fr"?" (francés de Francia, vouvoiement)":" (inglés americano)"}. No traduzcas nombres propios de hoteles, restaurantes, lugares ni personas. Responde SOLO el JSON.
+${JSON.stringify(src)}`,{modelTier:"complex"});
+    if(!r||typeof r!=="object")throw {code:"invalid_json"};
+    t.trad=t.trad||{};t.trad[l]={hash:trHash(t),fecha:new Date().toISOString(),data:r};
+    S.trMsg=`<span class="ok">Listo: ${LANGN[l]}. Revísalo con “Ver como cliente”.</span>`;scheduleSave();
+  }catch(e){S.trMsg='<span class="err">'+(e?.code==="invalid_json"?"La traducción salió incompleta. Intenta de nuevo.":ERR(e))+"</span>"}
+  S.trBusy=null;render();
+}
+
+/* ================= calendario .ics ================= */
+function icsText(t){
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Carlota Creel//Viajes//ES","CALSCALE:GREGORIAN"];
+  const e=s=>String(s||"").replace(/[\\;,]/g,m=>"\\"+m).replace(/\n/g,"\\n");
+  const d8=f=>f.replace(/-/g,"");const dt=(f,h)=>d8(f)+"T"+(h||"09:00").replace(":","")+"00";
+  const stamp=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+  allItems(t).forEach(i=>{
+    L.push("BEGIN:VEVENT","UID:"+(i.id||uid())+"@viajes-carlota","DTSTAMP:"+stamp);
+    if(i.tipo==="hotel"){L.push("DTSTART;VALUE=DATE:"+d8(i.fecha),"DTEND;VALUE=DATE:"+d8(i.hasta||addD(i.fecha,1)),"SUMMARY:"+e("Hotel: "+i.titulo))}
+    else if(i.tipo==="vuelo"){L.push("DTSTART:"+dt(i.fecha,i.hora),"DTEND:"+dt(i.llega?.fecha||i.fecha,i.llega?.hora||i.hora),"SUMMARY:"+e("Vuelo "+i.titulo))}
+    else if(i.hora){L.push("DTSTART:"+dt(i.fecha,i.hora),"DURATION:PT1H30M","SUMMARY:"+e(i.titulo))}
+    else{L.push("DTSTART;VALUE=DATE:"+d8(i.fecha),"DTEND;VALUE=DATE:"+d8(addD(i.fecha,1)),"SUMMARY:"+e(i.titulo))}
+    const loc=i.tipo==="vuelo"?[i.sale?.lugar,i.llega?.lugar].filter(Boolean).join(" → "):i.lugar;
+    if(loc)L.push("LOCATION:"+e(loc));const desc=[i.detalle,i.conf?"Confirmación: "+i.conf:""].filter(Boolean).join("\n");if(desc)L.push("DESCRIPTION:"+e(desc));
+    L.push("END:VEVENT");
+  });
+  L.push("END:VCALENDAR");return L.join("\r\n");
+}
+
+/* ================= acciones ================= */
+function findItem(id){for(const d of S.cur.dias||[]){const it=(d.items||[]).find(x=>x.id===id);if(it)return{d,it}}return null}
+document.addEventListener("click",async ev=>{
+  const b=ev.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
+  if(a==="copen"){const t=S.trips.find(x=>x.id===b.dataset.id);if(t){S.cur=t;S.view="cliente";S.welcome=true;S.cTab=estado(t)==="curso"?"hoy":"itinerario";render();scrollTo(0,0)}}
+  else if(a==="cback"){S.view="home";S.cur=null;S.sheet=false;S.lbx=null;render();scrollTo(0,0)}
+  else if(a==="htab"){S.homeTab=b.dataset.k;render()}
+  else if(a==="open"){const t=S.trips.find(x=>x.id===b.dataset.id);if(t){S.cur=JSON.parse(JSON.stringify(t));S.view="editor";S.trMsg="";S.editItem=null;S.confirmDel=false;S.impMsg="";S.photoMsg="";S.docMsg="";render();scrollTo(0,0)}}
+  else if(a==="new"){const d=new Date();d.setDate(d.getDate()+30);const s=iso(d);
+    S.cur={id:uid(),_nuevo:1,titulo:"",cliente:"",email:"",inicio:s,fin:addD(s,6),intro:"",contactos:[],docs:[],dias:[]};regenDias(S.cur);S.view="editor";S.impMsg="";render();scheduleSave();document.getElementById("f-titulo")?.focus()}
+  else if(a==="home"){S.view="home";S.cur=null;S.editItem=null;render();scrollTo(0,0)}
+  else if(a==="perfil"){S.view="perfil";S.perfilMsg="";render();scrollTo(0,0)}
+  else if(a==="saveperfil"){S.perfilMsg="Guardando…";render();savePerfil()}
+  else if(a==="lbadd"){const t=S.cur;t.lookbook=t.lookbook||{};const b={id:uid(),tipo:"destino",titulo:"",lugar:"",texto:"",fotos:[]};(t.lookbook.bloques=t.lookbook.bloques||[]).push(b);S.lbEdit=b.id;S.lbMsg="";render();document.getElementById("lb-titulo-"+b.id)?.focus()}
+  else if(a==="lbedit"){S.lbEdit=b.dataset.id;S.lbMsg="";render()}
+  else if(a==="lbdone"){S.lbEdit=null;render();scheduleSave()}
+  else if(a==="lbdel"){S.cur.lookbook.bloques=lbBlocks(S.cur).filter(x=>x.id!==b.dataset.id);S.lbEdit=null;render();scheduleSave()}
+  else if(a==="lbmove"){const bl=lbBlocks(S.cur);const i=bl.findIndex(x=>x.id===b.dataset.id);const j=i+(+b.dataset.d);if(i>=0&&j>=0&&j<bl.length){[bl[i],bl[j]]=[bl[j],bl[i]];render();scheduleSave()}}
+  else if(a==="lbdelfoto"){const bk=lbBlocks(S.cur).find(x=>x.id===b.dataset.id);if(bk){bk.fotos.splice(+b.dataset.j,1);render();scheduleSave()}}
+  else if(a==="lbwrite"){lbEscribir(b.dataset.id)}
+  else if(a==="lbview"){S.view="lookbook";S.sheet=false;render();scrollTo(0,0)}
+  else if(a==="lbx"){const list=GAL[b.dataset.g];if(list){S.lbx={list:list.slice(),i:+b.dataset.i};render()}}
+  else if(a==="lbxclose"){S.lbx=null;render()}
+  else if(a==="lbxmove"){const n=S.lbx.list.length;S.lbx.i=(S.lbx.i+(+b.dataset.d)+n)%n;render()}
+  else if(a==="itdelfoto"){const f=findItem(b.dataset.id);if(f){f.it.fotos.splice(+b.dataset.j,1);render();scheduleSave()}}
+  else if(a==="daydelfoto"){const d=S.cur.dias.find(x=>x.fecha===b.dataset.f);if(d){d.fotos.splice(+b.dataset.j,1);render();scheduleSave()}}
+  else if(a==="infogen"){infoGen()}
+  else if(a==="recimp"){recImp()}
+  else if(a==="addinf"){(S.cur.info=S.cur.info||[]).push({titulo:"",texto:""});render();scheduleSave()}
+  else if(a==="delinf"){S.cur.info.splice(+b.dataset.i,1);render();scheduleSave()}
+  else if(a==="addrec"){(S.cur.recs=S.cur.recs||[]).push({nombre:"",ciudad:"",tipo:"",nota:""});render();scheduleSave()}
+  else if(a==="delrec"){S.cur.recs.splice(+b.dataset.i,1);render();scheduleSave()}
+  else if(a==="addck"){(S.cur.checklist=S.cur.checklist||[]).push({id:uid(),t:""});render();scheduleSave()}
+  else if(a==="delck"){S.cur.checklist.splice(+b.dataset.i,1);render();scheduleSave()}
+  else if(a==="ckbase"){S.cur.checklist=CHK_BASE.map(x=>({id:uid(),t:x}));render();scheduleSave()}
+  else if(a==="lang"){S.lang=b.dataset.l;render()}
+  else if(a==="trad"){traducir(b.dataset.l)}
+  else if(a==="trdel"){if(S.cur.trad){delete S.cur.trad[b.dataset.l];S.trMsg="";render();scheduleSave()}}
+  else if(a==="preview"){S.view="cliente";S.welcome=true;S.cTab=estado(S.cur)==="curso"?"hoy":"itinerario";render();scrollTo(0,0)}
+  else if(a==="toeditor"){S.lbx=null;S.view="editor";render();scrollTo(0,0)}
+  else if(a==="sheet"){S.sheet=!S.sheet;render()}
+  else if(a==="copy"){const v=b.dataset.v;try{await navigator.clipboard.writeText(v);const m=document.getElementById("copyMsg");if(m)m.textContent="Copiado."}catch(e){const r=document.createRange();const el=b.closest(".ln")?.querySelector(".v");if(el){r.selectNodeContents(el);getSelection().removeAllRanges();getSelection().addRange(r)}}}
+  else if(a==="enter"){S.welcome=false;render();scrollTo(0,0)}
+  else if(a==="ctab"){S.cTab=b.dataset.k;render();const p=document.querySelector(`.pills [data-k="${S.cTab}"]`);p?.scrollIntoView({inline:"center",block:"nearest"})}
+  else if(a==="goday"){document.getElementById("day-"+b.dataset.i)?.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+  else if(a==="additem"){const d=S.cur.dias.find(x=>x.fecha===b.dataset.fecha);const it={id:uid(),tipo:"actividad",hora:"",titulo:""};(d.items=d.items||[]).push(it);S.editItem=it.id;render();document.getElementById("it-titulo-"+it.id)?.focus()}
+  else if(a==="edititem"){S.editItem=b.dataset.id;render()}
+  else if(a==="doneitem"){const f=findItem(S.editItem);if(f)f.d.items.sort((x,y)=>(x.hora||"99").localeCompare(y.hora||"99"));S.editItem=null;render();scheduleSave()}
+  else if(a==="delitem"){const f=findItem(b.dataset.id);if(f)f.d.items=f.d.items.filter(x=>x.id!==b.dataset.id);S.editItem=null;render();scheduleSave()}
+  else if(a==="addc"){(S.cur.contactos=S.cur.contactos||[]).push({nombre:"",rol:"",tel:""});render();scheduleSave()}
+  else if(a==="delc"){S.cur.contactos.splice(+b.dataset.i,1);render();scheduleSave()}
+  else if(a==="deldoc"){S.cur.docs.splice(+b.dataset.i,1);render();scheduleSave()}
+  else if(a==="nofoto"){delete S.cur.portada;S.photoMsg="";render();scheduleSave()}
+  else if(a==="del"){S.confirmDel=true;render()}
+  else if(a==="nodel"){S.confirmDel=false;render()}
+  else if(a==="yesdel"){const id=S.cur.id;clearTimeout(saveTimer);chain=chain.then(()=>db.collection("viajes").doc(id).delete()).catch(()=>{});S.view="home";S.cur=null;S.confirmDel=false;render()}
+  else if(a==="import"){importar()}
+  else if(a==="locate"){ubicar()}
+  else if(a==="ics"&&downloads){try{await downloads.save({filename:(S.cur.titulo||"viaje").replace(/[^\w\- ]+/g,"")+".ics",data:new Blob([icsText(S.cur)],{type:"text/calendar"})})}catch(e){}}
+  else if(a==="dl"&&downloads){const d=S.cur.docs[+b.dataset.i];try{const r=await fetch(d.url||"/_blob/"+d.id);const bl=await r.blob();await downloads.save({filename:d.archivo||d.nombre,data:bl})}catch(e){}}
+});
+document.addEventListener("input",ev=>{
+  const el=ev.target;
+  if(el.id==="q"){S.q=el.value;const pos=el.selectionStart;renderHome();const n=document.getElementById("q");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}return}
+  if(el.dataset.pf){S.perfil[el.dataset.pf]=el.value;return}
+  if(!S.cur)return;
+  if(el.dataset.f){S.cur[el.dataset.f]=el.value;if(el.dataset.f==="inicio"||el.dataset.f==="fin")regenDias(S.cur);scheduleSave()}
+  else if(el.dataset.inf){S.cur.info[+el.dataset.inf][el.dataset.k]=el.value;scheduleSave()}
+  else if(el.dataset.rec){S.cur.recs[+el.dataset.rec][el.dataset.k]=el.value;scheduleSave()}
+  else if(el.dataset.ck){S.cur.checklist[+el.dataset.ck].t=el.value;scheduleSave()}
+  else if(el.dataset.lb){S.cur.lookbook=S.cur.lookbook||{};S.cur.lookbook[el.dataset.lb]=el.value;scheduleSave()}
+  else if(el.dataset.lbf){const bk=lbBlocks(S.cur).find(x=>x.id===el.closest("[data-block]").dataset.block);if(bk){bk[el.dataset.lbf]=el.value;scheduleSave()}}
+  else if(el.dataset.dt){const d=S.cur.dias.find(x=>x.fecha===el.dataset.dt);if(d){d.titulo=el.value;scheduleSave()}}
+  else if(el.dataset.if){const f=findItem(el.closest("[data-item]").dataset.item);if(f){setP(f.it,el.dataset.if,el.value);if(el.dataset.if==="titulo"||el.dataset.if==="lugar"||el.dataset.if==="ciudad"){delete f.it.lat;delete f.it.lng}scheduleSave()}}
+  else if(el.dataset.cf){S.cur.contactos[+el.dataset.c][el.dataset.cf]=el.value;scheduleSave()}
+  else if(el.dataset.doc){S.cur.docs[+el.dataset.doc].nombre=el.value;scheduleSave()}
+});
+document.addEventListener("change",ev=>{const el=ev.target;
+  if(el.id==="f-imptrip"){importTrip(el.files&&el.files[0]);return}
+  if(el.id==="f-foto"){subirFoto(el.files&&el.files[0]);return}
+  if(el.id==="f-doc"){subirDoc(el.files&&el.files[0]);return}
+  if(el.dataset.itfotos){const f=findItem(el.dataset.itfotos);if(f)subirFotosA(f.it,[...(el.files||[])]);return}
+  if(el.dataset.dayfotos){const d=S.cur.dias.find(x=>x.fecha===el.dataset.dayfotos);if(d)subirFotosA(d,[...(el.files||[])]);return}
+  if(el.dataset.lbfotos){lbSubirFotos(el.dataset.lbfotos,[...(el.files||[])]);return}
+  if(el.dataset.chk&&S.cur){const st=chkState(S.cur);st[el.dataset.chk]=el.checked;try{localStorage.setItem(chkKey(S.cur),JSON.stringify(st))}catch(e){};render();return}
+  if(el.dataset.pfc){S.perfil[el.dataset.pfc]=el.checked;return}
+  if(el.dataset.if==="tipo"){render();return}
+  if(S.cur&&(el.dataset.f==="inicio"||el.dataset.f==="fin"))render();
+});
+
+/* ================= archivos ================= */
+async function shrink(file){
+  try{const bmp=await createImageBitmap(file);const k=Math.min(1,2000/Math.max(bmp.width,bmp.height));
+    const c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
+    c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);return (await new Promise(r=>c.toBlob(r,"image/jpeg",.85)))||file}catch(e){return file}
+}
+async function subirFoto(file){
+  if(!file||!assets||!S.cur)return;const trip=S.cur;S.photoBusy=true;S.photoMsg="";render();
+  try{const r=await assets.upload(await shrink(file));trip.portada={id:r.id,url:r.url};S.photoMsg='<span class="ok">Foto lista.</span>';if(S.cur===trip)scheduleSave()}
+  catch(e){S.photoMsg='<span class="err">No se pudo subir la foto. Prueba con otra.</span>'}
+  S.photoBusy=false;render();
+}
+async function subirDoc(file){
+  if(!file||!assets||!S.cur)return;const trip=S.cur;S.docBusy=true;S.docMsg="";render();
+  try{const r=await assets.upload(file);(trip.docs=trip.docs||[]).push({id:r.id,url:r.url,nombre:file.name.replace(/\.[^.]+$/,""),archivo:file.name});S.docMsg='<span class="ok">Documento agregado.</span>';if(S.cur===trip)scheduleSave()}
+  catch(e){S.docMsg='<span class="err">'+(e?.code==="too_large"?"El archivo pasa de 20 MB.":"No se pudo subir. Usa PDF o imagen.")+"</span>"}
+  S.docBusy=false;render();
+}
+
+
+/* ================= lookbook ================= */
+const LBT={destino:"Destino",hotel:"Hotel",experiencia:"Experiencia",gastronomia:"Gastronomía"};
+const fotoUrl=f=>f&&(f.url||"/_blob/"+f.id);
+const lbBlocks=t=>(t.lookbook&&t.lookbook.bloques)||[];
+function lookbookEditorHTML(t){
+  const L=t.lookbook||{};const bl=lbBlocks(t);
+  const blocks=bl.map((b,i)=>{
+    if(S.lbEdit===b.id){
+      const o=Object.entries(LBT).map(([k,v])=>`<option value="${k}" ${b.tipo===k?"selected":""}>${v}</option>`).join("");
+      return `<div class="iform" data-block="${esc(b.id)}"><div class="grid2"><label class="f">Tipo<select id="lb-tipo-${b.id}" data-lbf="tipo">${o}</select></label>
+        <label class="f">Lugar<input id="lb-lugar-${b.id}" data-lbf="lugar" value="${esc(b.lugar)}" placeholder="Kioto, Japón"></label></div>
+        <label class="f">Título<input id="lb-titulo-${b.id}" data-lbf="titulo" value="${esc(b.titulo)}" placeholder="Aman Kyoto, un bosque secreto"></label>
+        <label class="f">Texto<textarea id="lb-texto-${b.id}" data-lbf="texto" style="min-height:130px" placeholder="Cuéntales por qué este lugar es especial">${esc(b.texto)}</textarea></label>
+        <div class="row"><button class="mini" data-act="lbwrite" data-id="${esc(b.id)}" ${S.lbBusy?"disabled":""}>${S.lbBusy?"Escribiendo…":"Escribir con Claude"}</button><span class="note">${S.lbMsg||""}</span></div>
+        <div class="lbthumbs">${(b.fotos||[]).map((f,j)=>`<div class="th" style="background-image:${cssUrl(fotoUrl(f))}"><button data-act="lbdelfoto" data-id="${esc(b.id)}" data-j="${j}" aria-label="Quitar foto">×</button></div>`).join("")}</div>
+        ${assets?`<div><span class="btn filebtn">${S.lbPhotoBusy?"Subiendo…":"Agregar fotos"}<input id="lb-fotos-${b.id}" data-lbfotos="${esc(b.id)}" type="file" accept="image/*" multiple aria-label="Agregar fotos"></span></div>`:""}
+        <div class="spread"><span class="row" style="gap:4px"><button class="ghost" data-act="lbmove" data-id="${esc(b.id)}" data-d="-1" ${i===0?"disabled":""}>↑ Subir</button><button class="ghost" data-act="lbmove" data-id="${esc(b.id)}" data-d="1" ${i===bl.length-1?"disabled":""}>↓ Bajar</button></span>
+        <span class="row"><button class="danger" data-act="lbdel" data-id="${esc(b.id)}">Borrar</button><button class="primary" data-act="lbdone">Listo</button></span></div></div>`;
+    }
+    const f=(b.fotos||[])[0];
+    return `<div class="eitem" style="grid-template-columns:64px 1fr auto"><div class="th" style="width:64px;height:64px;border-radius:10px;background:var(--line) center/cover no-repeat;${f?"background-image:"+cssUrl(fotoUrl(f)):""}"></div>
+      <div style="min-width:0"><div class="k">${LBT[b.tipo]||"Destino"}${b.lugar?" · "+esc(b.lugar):""}</div><div class="ti">${esc(b.titulo||"Sin título")}</div><div class="d">${(b.fotos||[]).length} fotos</div></div>
+      <button class="ghost" data-act="lbedit" data-id="${esc(b.id)}">Editar</button></div>`;
+  }).join("");
+  return `<div class="sec"><div class="spread"><div><div class="eyebrow">Lookbook</div><p class="note" style="margin-top:4px">Inspiración para enamorar antes de cotizar: destinos, hoteles y experiencias con fotos y un texto evocador.</p></div>${bl.length?'<button data-act="lbview">Ver lookbook</button>':""}</div>
+    <label class="f">Frase de portada<input id="lb-frase" data-lb="frase" value="${esc(L.frase)}" placeholder="Un viaje para bajar el ritmo y mirar despacio"></label>
+    ${blocks}<div><button class="ghost" data-act="lbadd">+ Añadir destino, hotel o experiencia</button></div></div>`;
+}
+function lookbookBodyHTML(t){
+  return lbBlocks(t).map(b=>{const fs=b.fotos||[];
+    return `<article class="lbblock">${fs[0]?`<div class="hero" style="background-image:${cssUrl(fotoUrl(fs[0]))}"></div>`:""}
+      <div class="eyebrow">${L("b_"+(b.tipo||"destino"))}${b.lugar?" · "+esc(b.lugar):""}</div><h2>${esc(b.titulo)}</h2>${b.texto?`<p class="txt">${esc(b.texto)}</p>`:""}
+      ${fs.length>1?`<div class="pair">${fs.slice(1,5).map(f=>`<div style="background-image:${cssUrl(fotoUrl(f))}"></div>`).join("")}</div>`:""}</article>`}).join("");
+}
+function renderLookbook(){
+  const t=loc(S.cur),P=S.perfil,u=photoUrl(t),Lb=t.lookbook||{};
+  $m.innerHTML=`${S.owner?`<div class="banner" style="margin-top:12px"><span>Así verá ${esc(t.cliente||"tu cliente")} su lookbook.</span><button data-act="toeditor">Volver a editar</button></div>`:""}
+    ${langSwitch(S.cur)?`<div class="row" style="justify-content:flex-end;padding-top:10px">${langSwitch(S.cur)}</div>`:""}
+    <section class="lbhero${u?" ph":""}" style="${shade(u,.1,.6)}"><span class="eyebrow">Lookbook</span><h1>${esc(t.titulo||L("tuproximo"))}</h1>${Lb.frase?`<p>${esc(Lb.frase)}</p>`:""}
+      <span class="note" style="color:inherit;opacity:.9">${t.cliente?esc(L("para",{c:t.cliente}))+" · ":""}${esc(P.marca||P.nombre)}</span></section>
+    ${lookbookBodyHTML(t)||'<div class="empty">Agrega destinos, hoteles o experiencias para armar el lookbook.</div>'}
+    <section class="lbclose"><h2>${L("realidad")}</h2><p class="note">${L("cuentenme")}</p></section>
+    <footer class="footer"><span class="sign">Bon voyage</span><span>${L("lbcurado")} <b>${esc(P.nombre)}</b></span>${P.marca?`<span>${esc(P.marca)}</span>`:""}</footer>`;
+  $m.insertAdjacentHTML("beforeend",contactHTML()+lbxHTML());
+}
+async function subirFotosA(obj,files){
+  const trip=S.cur;if(!assets||!files.length)return;S.galBusy=true;render();let ok=0;
+  for(const f of files){try{const r=await assets.upload(await shrink(f));(obj.fotos=obj.fotos||[]).push({id:r.id,url:r.url});ok++}catch(e){}}
+  S.galBusy=false;if(ok&&S.cur===trip)scheduleSave();render();flash(ok===files.length?"Fotos agregadas":"Algunas fotos no se pudieron subir");
+}
+document.addEventListener("keydown",e=>{if(!S.lbx)return;if(e.key==="Escape"){S.lbx=null;render()}else if(e.key==="ArrowRight"||e.key==="ArrowLeft"){const n=S.lbx.list.length;S.lbx.i=(S.lbx.i+(e.key==="ArrowRight"?1:-1)+n)%n;render()}});
+async function lbSubirFotos(id,files){
+  const trip=S.cur;const b=lbBlocks(trip).find(x=>x.id===id);if(!b||!assets||!files?.length)return;
+  S.lbPhotoBusy=true;render();let ok=0;
+  for(const f of files){try{const r=await assets.upload(await shrink(f));(b.fotos=b.fotos||[]).push({id:r.id,url:r.url});ok++}catch(e){}}
+  S.lbPhotoBusy=false;S.lbMsg=ok===files.length?"":'<span class="err">Algunas fotos no se pudieron subir.</span>';if(ok&&S.cur===trip)scheduleSave();render();
+}
+async function lbEscribir(id){
+  const t=S.cur;const b=lbBlocks(t).find(x=>x.id===id);if(!b)return;
+  if(!sampleFn){S.lbMsg='<span class="err">Esta vista no puede usar a Claude.</span>';return render()}
+  if(!b.titulo&&!b.lugar){S.lbMsg='<span class="err">Escribe primero el título o el lugar.</span>';return render()}
+  S.lbBusy=true;S.lbMsg="";render();
+  try{
+    const r=await sampleFn(`Eres una asesora de viajes de lujo que escribe lookbooks de inspiración para clientes de alto nivel en México. Escribe en español, en segunda persona del plural (ustedes), un texto evocador de 70 a 110 palabras sobre este ${LBT[b.tipo]||"lugar"}: "${b.titulo}"${b.lugar?" en "+b.lugar:""}. Viaje: ${t.titulo||""}${t.cliente?" para "+t.cliente:""}.
+Tono elegante y cálido, concreto y sensorial: qué verán, sentirán y vivirán. Sin clichés como "joya escondida" o "experiencia única", sin signos de exclamación, sin precios ni datos que no puedas asegurar. Solo el texto, sin título.${b.texto?"\nBorrador de la asesora para respetar ideas: "+b.texto:""}`,{modelTier:"complex"});
+    b.texto=(r.text||"").trim();scheduleSave();
+  }catch(e){S.lbMsg='<span class="err">'+ERR(e)+"</span>"}
+  S.lbBusy=false;render();
+}
+/* ================= importar desde Claude ================= */
+async function importTrip(file){
+  if(!file)return;S.impTrip="Leyendo…";render();
+  try{
+    const j=JSON.parse(await file.text());const t=j.viaje;const fotos=j.fotos||{};const ids=Object.keys(fotos);const map={};let k=0;
+    for(const id of ids){S.impTrip=`Subiendo fotos ${++k}/${ids.length}…`;render();
+      const bin=atob(fotos[id].b64);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+      try{map[id]=await window.__importFoto(new Blob([arr],{type:fotos[id].ct||"image/jpeg"}))}catch(e){}}
+    const fix=o=>{if(Array.isArray(o))return o.map(fix).filter(x=>x!==null);if(o&&typeof o==="object"){if(o.id&&o.url&&String(o.url).startsWith("/_blob/")){return map[o.id]?{...o,...map[o.id]}:null}const r={};for(const [kk,v] of Object.entries(o)){const f=fix(v);if(f!==null)r[kk]=f}return r}return o};
+    const nt=fix(t);S.cur=nt;doSave();S.cur=null;S.impTrip="";render();
+  }catch(e){S.impTrip="";render();flash("No pude leer el archivo. Exporta de nuevo desde Claude.")}
+}
+/* ================= Claude ================= */
+const ERR=e=>e?.code==="not_granted"?"Permite que la página use a Claude.":e?.code==="rate_limited"?"Demasiadas solicitudes seguidas. Intenta en un minuto.":"No pude leer el texto. Intenta pegar solo la confirmación.";
+async function importar(){
+  const txt=(document.getElementById("imp")?.value||"").trim();
+  if(!txt){S.impMsg='<span class="err">Pega primero el texto de la confirmación.</span>';return render()}
+  if(!sampleFn){S.impMsg='<span class="err">Esta vista no puede usar a Claude.</span>';return render()}
+  S.impBusy=true;S.impMsg="";render();const t=S.cur;
+  const prompt=`Eres asistente de una asesora de viajes de lujo. Extrae del texto los elementos del itinerario. El viaje va del ${t.inicio} al ${t.fin}.
+Responde SOLO JSON con esta forma:
+{"items":[{"fecha":"YYYY-MM-DD (día en que ocurre; para hotel, el check-in; para vuelo, la salida)","tipo":"vuelo|hotel|traslado|actividad|restaurante|nota","hora":"HH:MM o vacío (vuelo: salida; hotel: check-in)","titulo":"vuelo: 'Aerolínea código número', ej. 'Aeroméxico AM 0058'; hotel: nombre del hotel; otros: título corto en español","ciudad":"ciudad o región","lugar":"dirección completa si viene","telefono":"","conf":"número de confirmación o localizador","detalle":"datos útiles para el cliente en español (beneficios, régimen, notas)","hasta":"hotel: fecha de check-out YYYY-MM-DD","cuartos":"hotel: número de cuartos","habitacion":"hotel: tipo de habitación y cama","huespedes":"hotel: nombres de los huéspedes","asientos":"vuelo: asientos o clase","vestimenta":"código de vestimenta si el texto lo menciona","sale":{"lugar":"vuelo: 'Ciudad (IATA)'","terminal":""},"llega":{"lugar":"vuelo: 'Ciudad (IATA)'","terminal":"","hora":"HH:MM","fecha":"YYYY-MM-DD"},"lat":número o null,"lng":número o null}]}
+Para hoteles, restaurantes y actividades da lat y lng aproximadas del lugar si lo reconoces; si no, null. Horas en hora local. No inventes datos que no estén en el texto (salvo coordenadas). Omite campos vacíos.
+TEXTO:
+${txt.slice(0,14000)}`;
+  try{
+    const r=await sampleFn.json(prompt,{modelTier:"complex"});const items=Array.isArray(r?.items)?r.items:[];let ok=0,fuera=0;
+    items.forEach(x=>{const d=(t.dias||[]).find(y=>y.fecha===x.fecha);if(!d){fuera++;return}
+      const it={id:uid(),tipo:TIPOS[x.tipo]?x.tipo:"nota"};
+      ["hora","titulo","ciudad","lugar","telefono","conf","detalle","hasta","cuartos","habitacion","huespedes","asientos","vestimenta"].forEach(k=>{if(x[k]!=null&&x[k]!=="")it[k]=String(x[k])});
+      if(it.tipo==="vuelo"){it.sale=x.sale||{};it.llega=x.llega||{}}
+      if(typeof x.lat==="number"&&typeof x.lng==="number"){it.lat=x.lat;it.lng=x.lng}
+      (d.items=d.items||[]).push(it);d.items.sort((a,b)=>(a.hora||"99").localeCompare(b.hora||"99"));ok++});
+    S.impMsg=ok?`<span class="ok">Agregué ${ok} ${ok===1?"elemento":"elementos"}. Revísalos abajo.</span>`:'<span class="err">No encontré elementos con fechas dentro del viaje.</span>';
+    if(fuera)S.impMsg+=` <span class="err">${fuera} quedaron fuera de las fechas del viaje.</span>`;
+    if(ok){scheduleSave();const ta=document.getElementById("imp");if(ta)ta.value=""}
+  }catch(e){S.impMsg='<span class="err">'+ERR(e)+"</span>"}
+  S.impBusy=false;render();
+}
+async function ubicar(){
+  if(!sampleFn)return;const t=S.cur;
+  const faltan=allItems(t).filter(i=>["hotel","restaurante","actividad"].includes(i.tipo)&&i.lat==null&&i.titulo);
+  if(!faltan.length)return;S.locBusy=true;render();
+  const lista=faltan.map(i=>({id:i.id,nombre:i.titulo,ciudad:i.ciudad||"",direccion:i.lugar||"",destino:t.titulo}));
+  try{
+    const r=await sampleFn.json(`Da coordenadas aproximadas (lat, lng en grados decimales) de estos lugares. Si no reconoces uno con razonable certeza, usa su ciudad. Responde SOLO JSON: {"lugares":[{"id":"...","lat":0,"lng":0,"ciudad":"ciudad o región corta"}]}
+${JSON.stringify(lista)}`,{modelTier:"complex"});
+    let n=0;(r?.lugares||[]).forEach(p=>{const f=findItem(p.id);if(f&&typeof p.lat==="number"&&typeof p.lng==="number"){f.it.lat=p.lat;f.it.lng=p.lng;if(!f.it.ciudad&&p.ciudad)f.it.ciudad=p.ciudad;n++}});
+    S.impMsg=`<span class="ok">Ubiqué ${n} ${n===1?"lugar":"lugares"} en el mapa.</span>`;if(n)scheduleSave();
+  }catch(e){S.impMsg='<span class="err">'+ERR(e)+"</span>"}
+  S.locBusy=false;render();
+}
+
+/* ================= arranque ================= */
+setInterval(()=>{const t=S.cur;if(!t||S.view!=="cliente")return;const x=document.getElementById("clk-a"),y=document.getElementById("clk-b");if(x)x.textContent=nowIn(t.zona).hora;if(y)y.textContent=nowIn("America/Mexico_City").hora;if(S.cTab==="hoy"&&!S.welcome&&!S.sheet&&!S.lbx&&document.activeElement===document.body){const sy=scrollY;render();scrollTo(0,sy)}},60000);
+render();
+(async()=>{
+  if(!window.claude?.use){S.loaded=true;S.error="Abre esta página desde claude.ai para ver tus viajes.";return render()}
+  const [user,d,smp,as,dl]=await Promise.all(["user","db","sample","assets","downloads"].map(n=>claude.use(n)));
+  S.owner=user?user.isOwner():null;sampleFn=smp;db=d;assets=as;downloads=dl;
+  if(!db){S.loaded=true;S.error="Inicia sesión en claude.ai para ver tus viajes.";return render()}
+  const timer=setTimeout(()=>{if(!S.loaded){S.loaded=true;S.error="Los viajes tardan en cargar. Revisa tu conexión y vuelve a abrir la página.";render()}},10000);
+  db.doc("ajustes/perfil").onSnapshot(s=>{if(s.exists){S.perfil={...PERFIL0,...s.data()};if(S.view!=="perfil"&&S.view!=="editor")render()}},()=>{});
+  db.collection("viajes").onSnapshot(snap=>{
+    clearTimeout(timer);S.trips=snap.docs.map(x=>({id:x.id,...x.data()}));S.loaded=true;S.error="";
+    if(S.view==="home")render();
+  },err=>{clearTimeout(timer);S.loaded=true;S.error="No pude cargar los viajes.";render()});
+})();
+})();
+</script>
+<script type="module" src="runtime.js"></script>
+</body></html>
