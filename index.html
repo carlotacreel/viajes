@@ -438,7 +438,7 @@ function itemSummary(it){
 function itemView(it){
   return `<div class="eitem"><div class="h">${esc(it.hora||"")}</div><div style="min-width:0">
     <div class="k">${TIPOS[it.tipo]||"Nota"}${it.lat!=null?' · <span class="ok">en mapa</span>':""}</div><div class="ti">${esc(it.titulo||"Sin título")}</div>
-    ${itemSummary(it)?`<div class="d">${esc(itemSummary(it))}</div>`:""}${it.conf?`<div class="d mono">Conf. ${esc(it.conf)}</div>`:""}${(it.fotos||[]).length?`<div class="d">${it.fotos.length} fotos</div>`:""}</div>
+    ${itemSummary(it)?`<div class="d">${esc(itemSummary(it))}</div>`:""}${it.conf?`<div class="d mono">${/^incluid/i.test(it.conf)?"Incluido en su programa":"Conf. "+esc(it.conf)}</div>`:""}${(it.fotos||[]).length?`<div class="d">${it.fotos.length} fotos</div>`:""}</div>
     <button class="ghost" data-act="edititem" data-id="${esc(it.id)}">Editar</button></div>`;
 }
 function fld(it,path,label,opt={}){
@@ -511,7 +511,7 @@ const LANGN={es:"Español",en:"English",fr:"Français"};
 const DICT={
  es:{bienv:"Bienvenidos",empieza:"Tu viaje empieza en",dias:"días",horas:"horas",minutos:"minutos",deviaje:"Estás de viaje",deN:"de {n} días",gracias:"Gracias por viajar conmigo",prep:"Preparado para {c}",entrar:"Entrar",tuviaje:"Tu viaje",
   mapa:"Mapa",resumen:"Resumen",itinerario:"Itinerario",vuelos:"Vuelos",hoteles:"Hoteles",actividades:"Actividades",restaurantes:"Restaurantes",documentos:"Documentos",calendario:"Calendario",inspiracion:"Inspiración",galeria:"Galería",hoy:"Hoy",info:"Información",recs:"Recomendaciones",antes:"Antes de salir",horaloc:"Hora local",horacdmx:"En México",ahora:"Lo que sigue",en:"En",manana:"Mañana",verit:"Ver todo el itinerario",faltan:"Faltan {n} días",hoyaqui:"Durante el viaje, aquí verás lo que sigue cada día.",noinfo:"Pronto aparecerá aquí la información práctica.",norecs:"Pronto aparecerán aquí mis recomendaciones.",recsintro:"Lugares que les recomiendo y que no están reservados. Toquen Maps para llegar.",nochk:"Sin pendientes por ahora.",chkintro:"Palomea lo que ya tengas listo.",
-  salida:"Salida",llegada:"Llegada",terminal:"Terminal",localiz:"Localizador",conf:"Conf",noche:"noche",noches:"noches",cuarto:"cuarto",cuartos:"cuartos",checkout:"Check-out",salidade:"Salida de {h}",
+  salida:"Salida",llegada:"Llegada",terminal:"Terminal",localiz:"Localizador",conf:"Conf",incluido:"Incluido en su programa",noche:"noche",noches:"noches",cuarto:"cuarto",cuartos:"cuartos",checkout:"Check-out",salidade:"Salida de {h}",
   dia:"Día",libre:"Día libre para disfrutar a su ritmo.",novuelos:"Aún no hay vuelos en este viaje.",nohoteles:"Aún no hay hoteles en este viaje.",norest:"Aún no hay restaurantes reservados.",noact:"Aún no hay actividades en este viaje.",nodocs:"Aquí aparecerán tus boletos, vouchers y documentos.",
   nofechas:"Faltan las fechas del viaje.",ruta:"Tu ruta",contloc:"Contactos locales",ver:"Ver",descargar:"Descargar",vermaps:"Ver en Maps ›",nomapa:"El mapa de tu ruta aparecerá aquí.",
   agregarcal:"Agregar a mi calendario",leyenda:"Vuelos, traslados, actividades o reservas",wd:["L","M","M","J","V","S","D"],
@@ -521,7 +521,7 @@ const DICT={
   b_destino:"Destino",b_hotel:"Hotel",b_experiencia:"Experiencia",b_gastronomia:"Gastronomía"},
  en:{bienv:"Welcome",empieza:"Your journey begins in",dias:"days",horas:"hours",minutos:"minutes",deviaje:"You are traveling",deN:"of {n} days",gracias:"Thank you for traveling with me",prep:"Prepared for {c}",entrar:"Enter",tuviaje:"Your trip",
   mapa:"Map",resumen:"Overview",itinerario:"Itinerary",vuelos:"Flights",hoteles:"Hotels",actividades:"Activities",restaurantes:"Restaurants",documentos:"Documents",calendario:"Calendar",inspiracion:"Inspiration",galeria:"Gallery",hoy:"Today",info:"Essentials",recs:"Recommendations",antes:"Before you go",horaloc:"Local time",horacdmx:"In Mexico",ahora:"Up next",en:"In",manana:"Tomorrow",verit:"See the full itinerary",faltan:"{n} days to go",hoyaqui:"During your trip, this is where you will see what comes next each day.",noinfo:"Practical information will appear here soon.",norecs:"My recommendations will appear here soon.",recsintro:"Places I recommend that are not booked. Tap Maps for directions.",nochk:"Nothing pending for now.",chkintro:"Tick off what you already have ready.",
-  salida:"Departure",llegada:"Arrival",terminal:"Terminal",localiz:"Booking ref",conf:"Conf",noche:"night",noches:"nights",cuarto:"room",cuartos:"rooms",checkout:"Check-out",salidade:"Check-out, {h}",
+  salida:"Departure",llegada:"Arrival",terminal:"Terminal",localiz:"Booking ref",conf:"Conf",incluido:"Included in your program",noche:"night",noches:"nights",cuarto:"room",cuartos:"rooms",checkout:"Check-out",salidade:"Check-out, {h}",
   dia:"Day",libre:"A free day to enjoy at your own pace.",novuelos:"No flights in this trip yet.",nohoteles:"No hotels in this trip yet.",norest:"No restaurant reservations yet.",noact:"No activities in this trip yet.",nodocs:"Your tickets, vouchers and documents will appear here.",
   nofechas:"Trip dates are missing.",ruta:"Your route",contloc:"Local contacts",ver:"View",descargar:"Download",vermaps:"Open in Maps ›",nomapa:"Your route map will appear here.",
   agregarcal:"Add to my calendar",leyenda:"Flights, transfers, activities or reservations",wd:["M","T","W","T","F","S","S"],
@@ -531,7 +531,7 @@ const DICT={
   b_destino:"Destination",b_hotel:"Hotel",b_experiencia:"Experience",b_gastronomia:"Gastronomy"},
  fr:{bienv:"Bienvenue",empieza:"Votre voyage commence dans",dias:"jours",horas:"heures",minutos:"minutes",deviaje:"Vous êtes en voyage",deN:"sur {n} jours",gracias:"Merci d'avoir voyagé avec moi",prep:"Préparé pour {c}",entrar:"Entrer",tuviaje:"Votre voyage",
   mapa:"Carte",resumen:"Aperçu",itinerario:"Itinéraire",vuelos:"Vols",hoteles:"Hôtels",actividades:"Activités",restaurantes:"Restaurants",documentos:"Documents",calendario:"Calendrier",inspiracion:"Inspiration",galeria:"Galerie",hoy:"Aujourd'hui",info:"Infos pratiques",recs:"Recommandations",antes:"Avant le départ",horaloc:"Heure locale",horacdmx:"Au Mexique",ahora:"À suivre",en:"Dans",manana:"Demain",verit:"Voir tout l'itinéraire",faltan:"Plus que {n} jours",hoyaqui:"Pendant votre voyage, vous verrez ici la suite de chaque journée.",noinfo:"Les infos pratiques apparaîtront ici bientôt.",norecs:"Mes recommandations apparaîtront ici bientôt.",recsintro:"Des adresses que je vous recommande, sans réservation. Touchez Maps pour l'itinéraire.",nochk:"Rien en attente pour le moment.",chkintro:"Cochez ce qui est déjà prêt.",
-  salida:"Départ",llegada:"Arrivée",terminal:"Terminal",localiz:"Réservation",conf:"Conf",noche:"nuit",noches:"nuits",cuarto:"chambre",cuartos:"chambres",checkout:"Départ",salidade:"Départ de {h}",
+  salida:"Départ",llegada:"Arrivée",terminal:"Terminal",localiz:"Réservation",conf:"Conf",incluido:"Inclus dans votre programme",noche:"nuit",noches:"nuits",cuarto:"chambre",cuartos:"chambres",checkout:"Départ",salidade:"Départ de {h}",
   dia:"Jour",libre:"Journée libre, à votre rythme.",novuelos:"Pas encore de vols pour ce voyage.",nohoteles:"Pas encore d'hôtels pour ce voyage.",norest:"Pas encore de restaurants réservés.",noact:"Pas encore d'activités pour ce voyage.",nodocs:"Vos billets, bons et documents apparaîtront ici.",
   nofechas:"Les dates du voyage manquent.",ruta:"Votre parcours",contloc:"Contacts sur place",ver:"Voir",descargar:"Télécharger",vermaps:"Voir sur Maps ›",nomapa:"La carte de votre parcours apparaîtra ici.",
   agregarcal:"Ajouter à mon calendrier",leyenda:"Vols, transferts, activités ou réservations",wd:["L","M","M","J","V","S","D"],
@@ -625,6 +625,7 @@ function genericCard(r){
 const STATUS=/^(confirmad|pagad|reservad|pendiente|por confirmar|solicitad)/i;
 function confHTML(c,label){
   if(!c)return "";
+  if(/^incluid/i.test(String(c).trim()))return `<span class="status">✓ ${L("incluido")}</span>`;
   if(STATUS.test(String(c).trim())){const pend=/^(pendiente|por confirmar|solicitad)/i.test(String(c).trim());
     return `<span class="status${pend?" pend":""}">${pend?"":"✓ "}${esc(c)}</span>`}
   return `<span class="confpill"><small>${(label||L("conf")).toUpperCase()}</small>${esc(c)}</span>`;
@@ -927,7 +928,7 @@ function icsText(t){
     else if(i.hora){L.push("DTSTART:"+dt(i.fecha,i.hora),"DURATION:PT1H30M","SUMMARY:"+e(i.titulo))}
     else{L.push("DTSTART;VALUE=DATE:"+d8(i.fecha),"DTEND;VALUE=DATE:"+d8(addD(i.fecha,1)),"SUMMARY:"+e(i.titulo))}
     const loc=i.tipo==="vuelo"?[i.sale?.lugar,i.llega?.lugar].filter(Boolean).join(" → "):i.lugar;
-    if(loc)L.push("LOCATION:"+e(loc));const desc=[i.detalle,i.conf?"Confirmación: "+i.conf:""].filter(Boolean).join("\n");if(desc)L.push("DESCRIPTION:"+e(desc));
+    if(loc)L.push("LOCATION:"+e(loc));const desc=[i.detalle,i.conf?(/^incluid/i.test(i.conf)?"Incluido en su programa":"Confirmación: "+i.conf):""].filter(Boolean).join("\n");if(desc)L.push("DESCRIPTION:"+e(desc));
     L.push("END:VEVENT");
   });
   L.push("END:VCALENDAR");return L.join("\r\n");
