@@ -1114,6 +1114,25 @@ Tono elegante y cálido, concreto y sensorial: qué verán, sentirán y vivirán
   S.lbBusy=false;render();
 }
 /* ================= importar desde Claude ================= */
+/* Al importar encima de un viaje que ya existe, conserva lo que solo vive en esta app:
+   fotos de portada, de días, de hoteles y actividades, y los correos de los clientes. */
+function conservar(nt,old){
+  if(!old)return nt;
+  const tiene=o=>o&&Array.isArray(o.fotos)&&o.fotos.length;
+  const clave=it=>(it.tipo||"")+"|"+String(it.titulo||"").trim().toLowerCase();
+  if(!nt.portada&&old.portada)nt.portada=old.portada;
+  const oDias={},oId={},oTit={};
+  (old.dias||[]).forEach(d=>{oDias[d.fecha]=d;(d.items||[]).forEach(it=>{if(it.id)oId[it.id]=it;oTit[clave(it)]=it})});
+  (nt.dias||[]).forEach(d=>{
+    const od=oDias[d.fecha];if(!tiene(d)&&tiene(od))d.fotos=od.fotos;
+    (d.items||[]).forEach(it=>{if(tiene(it))return;const o=oId[it.id]&&clave(oId[it.id])===clave(it)?oId[it.id]:oTit[clave(it)];if(tiene(o))it.fotos=o.fotos})});
+  const oBl={};((old.lookbook&&old.lookbook.bloques)||[]).forEach(b=>{oBl[b.id]=b});
+  ((nt.lookbook&&nt.lookbook.bloques)||[]).forEach(b=>{if(!tiene(b)&&tiene(oBl[b.id]))b.fotos=oBl[b.id].fotos});
+  if(!(nt.clientes||[]).length&&(old.clientes||[]).length)nt.clientes=old.clientes;
+  if(!nt.email&&old.email)nt.email=old.email;
+  if(!(nt.docs||[]).length&&(old.docs||[]).length)nt.docs=old.docs;
+  return nt;
+}
 async function importTrip(file){
   if(!file)return;S.impTrip="Leyendo…";render();
   try{
@@ -1122,7 +1141,7 @@ async function importTrip(file){
       const bin=atob(fotos[id].b64);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
       try{map[id]=await window.__importFoto(new Blob([arr],{type:fotos[id].ct||"image/jpeg"}))}catch(e){fallas++}}
     const fix=o=>{if(Array.isArray(o))return o.map(fix).filter(x=>x!==null);if(o&&typeof o==="object"){if(o.id&&o.url&&String(o.url).startsWith("/_blob/")){return map[o.id]?{...o,...map[o.id]}:null}const r={};for(const [kk,v] of Object.entries(o)){const f=fix(v);if(f!==null)r[kk]=f}return r}return o};
-    const nt=fix(t);S.cur=nt;doSave();S.cur=null;S.impTrip=fallas?`Importado · ${fallas} archivos no entraron`:"Importado ✓";render();setTimeout(()=>{S.impTrip="";render()},6000);
+    const nt=conservar(fix(t),S.trips.find(x=>x.id===t.id));S.cur=nt;doSave();S.cur=null;S.impTrip=fallas?`Importado · ${fallas} archivos no entraron`:"Importado ✓";render();setTimeout(()=>{S.impTrip="";render()},6000);
   }catch(e){S.impTrip="";render();flash("No pude leer el archivo. Exporta de nuevo desde Claude.")}
 }
 /* ================= Claude ================= */
