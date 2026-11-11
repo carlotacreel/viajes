@@ -72,6 +72,10 @@ function resolveIn(root) {
     const id = img.getAttribute("src").slice(FOTO.length); img.removeAttribute("src");
     const u = await fotoObjectUrl(id); if (u) img.src = u;
   });
+  root.querySelectorAll(`a[href^="${FOTO}"]`).forEach(async a => {
+    const id = a.getAttribute("href").slice(FOTO.length); a.removeAttribute("href");
+    const u = await fotoObjectUrl(id); if (u) a.href = u;
+  });
   root.querySelectorAll(`[style*="${FOTO}"]`).forEach(async el => {
     const st = el.getAttribute("style"); const ids = [...st.matchAll(/fsimg:([A-Za-z0-9_-]+)/g)].map(m => m[1]);
     let out = st; for (const id of ids) { const u = await fotoObjectUrl(id); out = out.split(FOTO + id).join(u || ""); }
@@ -79,7 +83,7 @@ function resolveIn(root) {
   });
 }
 new MutationObserver(ms => { for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(n => n.nodeType === 1 && resolveIn(n.parentNode || n)); else if (m.target.nodeType === 1) resolveIn(m.target.parentNode || m.target); } })
-  .observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["src", "style"] });
+  .observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["src", "style", "href"] });
 
 async function compress(blob, max = 1400, q = .82) {
   try {
@@ -129,6 +133,7 @@ onAuthStateChanged(auth, user => {
   document.body.classList.toggle("is-owner", owner);
   window.__logout = () => signOut(auth).then(() => location.reload());
   window.__importFoto = saveFoto;
+  window.__fotoUrl = u => String(u||"").startsWith(FOTO) ? fotoObjectUrl(String(u).slice(FOTO.length)) : Promise.resolve(u);
   __rt.resolve("user", { isOwner: () => owner, email: user.email });
   __rt.resolve("db", makeDb(user, owner));
   __rt.resolve("sample", null);

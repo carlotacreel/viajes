@@ -993,7 +993,7 @@ document.addEventListener("click",async ev=>{
   else if(a==="import"){importar()}
   else if(a==="locate"){ubicar()}
   else if(a==="ics"&&downloads){try{await downloads.save({filename:(S.cur.titulo||"viaje").replace(/[^\w\- ]+/g,"")+".ics",data:new Blob([icsText(S.cur)],{type:"text/calendar"})})}catch(e){}}
-  else if(a==="dl"&&downloads){const d=S.cur.docs[+b.dataset.i];try{const r=await fetch(d.url||"/_blob/"+d.id);const bl=await r.blob();await downloads.save({filename:d.archivo||d.nombre,data:bl})}catch(e){}}
+  else if(a==="dl"&&downloads){const d=S.cur.docs[+b.dataset.i];try{const r=await fetch(window.__fotoUrl?await window.__fotoUrl(d.url||"/_blob/"+d.id):(d.url||"/_blob/"+d.id));const bl=await r.blob();await downloads.save({filename:d.archivo||d.nombre,data:bl})}catch(e){}}
 });
 document.addEventListener("input",ev=>{
   const el=ev.target;
@@ -1202,5 +1202,5 @@ render();
 })();
 })();
 </script>
-<script type="module" src="runtime.js?v=4"></script>
+<script type="module" src="runtime.js?v=5"></script>
 </body></html>
