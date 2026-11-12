@@ -339,6 +339,16 @@ function regenDias(t){
   t.dias=out;
 }
 
+/* ================= link privado del viaje ================= */
+const linkUrl=t=>location.origin+location.pathname+"?v="+t.token;
+const newToken=()=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";const r=crypto.getRandomValues(new Uint8Array(22));return [...r].map(x=>a[x%a.length]).join("")};
+function linkHTML(t){
+  if(!t.token)return `<div class="iform"><div class="eyebrow">Link para tu cliente</div><p class="note">Un link privado: tu cliente lo abre y ve su viaje al instante, sin correo ni contraseña.</p><div><button class="primary" data-act="mklink">Crear link</button></div></div>`;
+  return `<div class="iform"><div class="eyebrow">Link para tu cliente</div><div class="mono" style="font-size:13px;overflow-wrap:anywhere;user-select:all">${esc(linkUrl(t))}</div>
+    <div class="row"><button class="primary" data-act="copylink">${S.linkMsg||"Copiar link"}</button><a class="btn" href="${esc(linkUrl(t))}" target="_blank" rel="noopener">Abrir</a><button class="ghost" data-act="newlink">Cambiar link</button></div>
+    <p class="note">Quien tenga este link ve el viaje. Si lo compartiste por error, toca “Cambiar link” y el anterior deja de funcionar.</p></div>`;
+}
+
 /* ================= guardado ================= */
 function flash(msg){const el=document.getElementById("saveState");if(el)el.textContent=msg}
 function scheduleSave(){if(!db||!S.cur)return;if(S.cur._nuevo){const t=S.cur;if(!t.titulo&&!t.cliente&&!allItems(t).length)return;delete t._nuevo}flash("Guardando…");clearTimeout(saveTimer);saveTimer=setTimeout(doSave,700)}
@@ -377,7 +387,7 @@ function render(){
     const act=list.filter(t=>estado(t)!=="pasados"),pas=list.filter(t=>estado(t)==="pasados").reverse();
     const card=t=>{const u=photoUrl(t),e=estado(t);const chip=e==="curso"?`<span class="chip curso">De viaje</span>`:e==="proximos"&&t.inicio?`<span class="chip">${ndays(hoy,t.inicio)===1?"Mañana":"En "+ndays(hoy,t.inicio)+" días"}</span>`:"";
       return `<button class="tcard${u?" ph":""}" data-act="copen" data-id="${esc(t.id)}" style="${shade(u,.05,.6)}">${chip}<span class="arrow" aria-hidden="true">→</span><h3>${esc(t.titulo||"Tu viaje")}</h3><span class="sub">${t.inicio?fmt(t.inicio,{day:"numeric",month:"short",year:"numeric"}):""}</span></button>`};
-    $m.innerHTML=`<header class="brandtop"><button class="gear" onclick="__logout()" aria-label="Salir" title="Salir"><svg class="icon" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button><b>${esc(P.marca||P.nombre)}</b><span>${esc(P.marca?P.nombre:"Viajes a la medida")}</span></header>
+    $m.innerHTML=`<header class="brandtop">${window.__linkMode?"":`<button class="gear" onclick="__logout()" aria-label="Salir" title="Salir"><svg class="icon" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button>`}<b>${esc(P.marca||P.nombre)}</b><span>${esc(P.marca?P.nombre:"Viajes a la medida")}</span></header>
       ${!S.loaded?'<div class="empty">Cargando tus viajes…</div>':S.error?`<div class="empty err">${esc(S.error)}</div>`:!list.length?'<div class="empty"><h3>Aún no hay viajes con este correo</h3><p>Si crees que es un error, escríbele a tu asesora.</p></div>':
       `<div class="tcards">${act.map(card).join("")}</div>${pas.length?`<div class="eyebrow" style="margin-top:8px">Viajes anteriores</div><div class="tcards">${pas.map(card).join("")}</div>`:""}`}`;
     return;
@@ -481,8 +491,8 @@ function renderEditor(){
       <button class="ghost" data-act="home">← Mis viajes</button><span class="note" id="saveState"></span><button class="primary" data-act="preview">Ver como cliente</button></div>
     <div class="stack">
       <label class="f">Destino o nombre del viaje<input id="f-titulo" data-f="titulo" value="${esc(t.titulo)}" placeholder="Japón en primavera"></label>
-      <div class="grid2"><label class="f">Viajeros<input id="f-cliente" data-f="cliente" value="${esc(t.cliente)}" placeholder="Mariana & Mario"></label>
-      <label class="f">Correos de los clientes<input id="f-email" data-f="email" type="email" value="${esc(t.email)}" placeholder="Correos separados por coma"></label></div>
+      <label class="f">Viajeros<input id="f-cliente" data-f="cliente" value="${esc(t.cliente)}" placeholder="Mariana & Mario"></label>
+      ${linkHTML(t)}
       <div class="grid2"><label class="f">Llegada<input id="f-inicio" data-f="inicio" type="date" value="${esc(t.inicio)}"></label>
       <label class="f">Regreso<input id="f-fin" data-f="fin" type="date" value="${esc(t.fin)}"></label></div>
       <label class="f">Mensaje de bienvenida<textarea id="f-intro" data-f="intro" placeholder="Unas líneas para abrir el viaje">${esc(t.intro)}</textarea></label>
@@ -939,7 +949,7 @@ function findItem(id){for(const d of S.cur.dias||[]){const it=(d.items||[]).find
 document.addEventListener("click",async ev=>{
   const b=ev.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
   if(a==="copen"){const t=S.trips.find(x=>x.id===b.dataset.id);if(t){S.cur=t;S.view="cliente";S.welcome=true;S.cTab=estado(t)==="curso"?"hoy":"itinerario";render();scrollTo(0,0)}}
-  else if(a==="cback"){S.view="home";S.cur=null;S.sheet=false;S.lbx=null;render();scrollTo(0,0)}
+  else if(a==="cback"){S.dejarLista=true;S.view="home";S.cur=null;S.sheet=false;S.lbx=null;render();scrollTo(0,0)}
   else if(a==="htab"){S.homeTab=b.dataset.k;render()}
   else if(a==="open"){const t=S.trips.find(x=>x.id===b.dataset.id);if(t){S.cur=JSON.parse(JSON.stringify(t));S.view="editor";S.trMsg="";S.editItem=null;S.confirmDel=false;S.impMsg="";S.photoMsg="";S.docMsg="";render();scrollTo(0,0)}}
   else if(a==="new"){const d=new Date();d.setDate(d.getDate()+30);const s=iso(d);
@@ -989,7 +999,10 @@ document.addEventListener("click",async ev=>{
   else if(a==="nofoto"){delete S.cur.portada;S.photoMsg="";render();scheduleSave()}
   else if(a==="del"){S.confirmDel=true;render()}
   else if(a==="nodel"){S.confirmDel=false;render()}
-  else if(a==="yesdel"){const id=S.cur.id;clearTimeout(saveTimer);chain=chain.then(()=>db.collection("viajes").doc(id).delete()).catch(()=>{});S.view="home";S.cur=null;S.confirmDel=false;render()}
+  else if(a==="mklink"){S.cur.token=newToken();clearTimeout(saveTimer);doSave();render()}
+  else if(a==="newlink"){const old=S.cur.token;S.cur.token=newToken();S.linkMsg="";clearTimeout(saveTimer);doSave();if(old)chain=chain.then(()=>db.collection("compartidos").doc(old).delete()).catch(()=>{});render()}
+  else if(a==="copylink"){try{await navigator.clipboard.writeText(linkUrl(S.cur));S.linkMsg="Copiado ✓"}catch(e){S.linkMsg="Selecciona el link y cópialo"}render();setTimeout(()=>{S.linkMsg="";if(S.view==="editor")render()},2500)}
+  else if(a==="yesdel"){const id=S.cur.id;if(S.cur.token){const tk=S.cur.token;chain=chain.then(()=>db.collection("compartidos").doc(tk).delete()).catch(()=>{})}clearTimeout(saveTimer);chain=chain.then(()=>db.collection("viajes").doc(id).delete()).catch(()=>{});S.view="home";S.cur=null;S.confirmDel=false;render()}
   else if(a==="import"){importar()}
   else if(a==="locate"){ubicar()}
   else if(a==="ics"&&downloads){try{await downloads.save({filename:(S.cur.titulo||"viaje").replace(/[^\w\- ]+/g,"")+".ics",data:new Blob([icsText(S.cur)],{type:"text/calendar"})})}catch(e){}}
@@ -1197,10 +1210,14 @@ render();
   db.doc("ajustes/perfil").onSnapshot(s=>{if(s.exists){S.perfil={...PERFIL0,...s.data()};if(S.view!=="perfil"&&S.view!=="editor")render()}},()=>{});
   db.collection("viajes").onSnapshot(snap=>{
     clearTimeout(timer);S.trips=snap.docs.map(x=>({id:x.id,...x.data()}));S.loaded=true;S.error="";
+    if(S.owner===false){
+      if(S.cur){const n=S.trips.find(x=>x.id===S.cur.id);if(n)S.cur=n}
+      if(S.view==="home"&&S.trips.length===1&&!S.dejarLista){const t=S.trips[0];S.cur=t;S.view="cliente";S.welcome=true;S.cTab=estado(t)==="curso"?"hoy":"itinerario";render();return}
+    }
     if(S.view==="home")render();
   },err=>{clearTimeout(timer);S.loaded=true;S.error="No pude cargar los viajes.";render()});
 })();
 })();
 </script>
-<script type="module" src="runtime.js?v=5"></script>
+<script type="module" src="runtime.js?v=6"></script>
 </body></html>

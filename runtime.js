@@ -105,6 +105,50 @@ async function saveFoto(blob) {
   return { id, url: FOTO + id };
 }
 
+/* ---------- links privados por viaje (sin correo ni contraseña) ---------- */
+const LS_LINKS = "viajes-links";
+const publico = (t, id) => { const c = { ...t, id }; delete c.email; delete c.clientes; return c; };
+const leerLinks = () => { try { return JSON.parse(localStorage.getItem(LS_LINKS) || "[]").filter(x => /^[A-Za-z0-9]{16,}$/.test(x)); } catch (e) { return []; } };
+const guardarLinks = l => { try { localStorage.setItem(LS_LINKS, JSON.stringify([...new Set(l)])); } catch (e) {} };
+const qLink = new URLSearchParams(location.search).get("v");
+if (qLink && /^[A-Za-z0-9]{16,}$/.test(qLink)) guardarLinks([qLink, ...leerLinks()]);
+function linkDb() {
+  return {
+    collection: name => ({
+      onSnapshot: (next, err) => {
+        const toks = leerLinks(), found = new Map(), seen = new Set();
+        const emit = () => { if (seen.size >= toks.length) next({ docs: [...found.values()], size: found.size, empty: !found.size }); };
+        if (!toks.length) { next({ docs: [], size: 0, empty: true }); return () => {}; }
+        const subs = toks.map(tok => onSnapshot(doc(fs, "compartidos", tok), s => {
+          seen.add(tok);
+          if (s.exists()) found.set(tok, wrapSnap(s));
+          else { found.delete(tok); if (!s.metadata.fromCache) guardarLinks(leerLinks().filter(x => x !== tok)); }
+          emit();
+        }, e => { seen.add(tok); emit(); }));
+        return () => subs.forEach(u => u());
+      },
+      doc: () => ({ set: async () => {}, delete: async () => {} })
+    }),
+    doc: path => ({
+      onSnapshot: (next, err) => onSnapshot(doc(fs, ...path.split("/")), s => next(wrapSnap(s)), e => err && err(e)),
+      set: async () => {}
+    })
+  };
+}
+function startLinkMode() {
+  started = true; window.__linkMode = true;
+  box.hidden = true; document.getElementById("main").hidden = false;
+  window.__fotoUrl = u => String(u||"").startsWith(FOTO) ? fotoObjectUrl(String(u).slice(FOTO.length)) : Promise.resolve(u);
+  __rt.resolve("user", { isOwner: () => false, email: "" });
+  __rt.resolve("db", linkDb());
+  __rt.resolve("sample", null);
+  __rt.resolve("assets", null);
+  __rt.resolve("downloads", { save: async ({ filename, data }) => {
+    const b = data instanceof Blob ? data : new Blob([data]); const a = document.createElement("a");
+    a.href = URL.createObjectURL(b); a.download = filename; document.body.appendChild(a); a.click(); a.remove(); return { status: "saved" };
+  } });
+}
+
 /* ---------- adaptadores con la forma que espera la app ---------- */
 const wrapSnap = s => ({ id: s.id, exists: s.exists(), data: () => s.data(), metadata: s.metadata });
 function makeDb(user, owner) {
@@ -115,7 +159,14 @@ function makeDb(user, owner) {
         const q = name === "viajes" && !owner ? query(collection(fs, "viajes"), where("clientes", "array-contains", em)) : collection(fs, name);
         return onSnapshot(q, s => next({ docs: s.docs.map(wrapSnap), size: s.size, empty: s.empty }), e => err && err({ code: e.code, message: e.message }));
       },
-      doc: id => ({ set: data => setDoc(doc(fs, name, id), JSON.parse(JSON.stringify(data))), delete: () => deleteDoc(doc(fs, name, id)) })
+      doc: id => ({
+        set: async data => {
+          const clean = JSON.parse(JSON.stringify(data));
+          await setDoc(doc(fs, name, id), clean);
+          if (name === "viajes" && owner && clean.token) await setDoc(doc(fs, "compartidos", clean.token), publico(clean, id));
+        },
+        delete: () => deleteDoc(doc(fs, name, id))
+      })
     }),
     doc: path => ({
       onSnapshot: (next, err) => onSnapshot(doc(fs, ...path.split("/")), s => next(wrapSnap(s)), e => err && err(e)),
@@ -125,8 +176,10 @@ function makeDb(user, owner) {
 }
 
 let started = false;
+if (qLink && !isSignInWithEmailLink(auth, location.href)) startLinkMode();
 onAuthStateChanged(auth, user => {
-  if (!user) { if (started) location.reload(); else showLogin(); return; }
+  if (window.__linkMode) return;
+  if (!user) { if (started) location.reload(); else if (leerLinks().length) startLinkMode(); else showLogin(); return; }
   if (started) return; started = true;
   box.hidden = true; document.getElementById("main").hidden = false;
   const owner = (user.email || "").toLowerCase() === OWNER_EMAIL && user.emailVerified;
