@@ -8,6 +8,7 @@ import { firebaseConfig, OWNER_EMAIL } from "./firebase-config.js?v=3";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+auth.languageCode = "es";
 const fs = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 
 /* ---------- pantalla de acceso ---------- */
@@ -186,6 +187,7 @@ onAuthStateChanged(auth, user => {
   document.body.classList.toggle("is-owner", owner);
   window.__logout = () => signOut(auth).then(() => location.reload());
   window.__importFoto = saveFoto;
+  window.__userEmail = user.email || "";
   window.__fotoUrl = u => String(u||"").startsWith(FOTO) ? fotoObjectUrl(String(u).slice(FOTO.length)) : Promise.resolve(u);
   __rt.resolve("user", { isOwner: () => owner, email: user.email });
   __rt.resolve("db", makeDb(user, owner));

@@ -388,7 +388,7 @@ function render(){
     const card=t=>{const u=photoUrl(t),e=estado(t);const chip=e==="curso"?`<span class="chip curso">De viaje</span>`:e==="proximos"&&t.inicio?`<span class="chip">${ndays(hoy,t.inicio)===1?"Mañana":"En "+ndays(hoy,t.inicio)+" días"}</span>`:"";
       return `<button class="tcard${u?" ph":""}" data-act="copen" data-id="${esc(t.id)}" style="${shade(u,.05,.6)}">${chip}<span class="arrow" aria-hidden="true">→</span><h3>${esc(t.titulo||"Tu viaje")}</h3><span class="sub">${t.inicio?fmt(t.inicio,{day:"numeric",month:"short",year:"numeric"}):""}</span></button>`};
     $m.innerHTML=`<header class="brandtop">${window.__linkMode?"":`<button class="gear" onclick="__logout()" aria-label="Salir" title="Salir"><svg class="icon" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button>`}<b>${esc(P.marca||P.nombre)}</b><span>${esc(P.marca?P.nombre:"Viajes a la medida")}</span></header>
-      ${!S.loaded?'<div class="empty">Cargando tus viajes…</div>':S.error?`<div class="empty err">${esc(S.error)}</div>`:!list.length?'<div class="empty"><h3>Aún no hay viajes con este correo</h3><p>Si crees que es un error, escríbele a tu asesora.</p></div>':
+      ${!S.loaded?'<div class="empty">Cargando tus viajes…</div>':S.error?`<div class="empty err">${esc(S.error)}</div>`:!list.length?`<div class="empty"><h3>Aún no hay viajes con este correo</h3><p>${esc(window.__userEmail||"")}</p><p>Si crees que es un error, escríbele a tu asesora.</p>${window.__linkMode?"":`<button onclick="__logout()">Entrar con otro correo</button>`}</div>`:
       `<div class="tcards">${act.map(card).join("")}</div>${pas.length?`<div class="eyebrow" style="margin-top:8px">Viajes anteriores</div><div class="tcards">${pas.map(card).join("")}</div>`:""}`}`;
     return;
   }
@@ -491,7 +491,9 @@ function renderEditor(){
       <button class="ghost" data-act="home">← Mis viajes</button><span class="note" id="saveState"></span><button class="primary" data-act="preview">Ver como cliente</button></div>
     <div class="stack">
       <label class="f">Destino o nombre del viaje<input id="f-titulo" data-f="titulo" value="${esc(t.titulo)}" placeholder="Japón en primavera"></label>
-      <label class="f">Viajeros<input id="f-cliente" data-f="cliente" value="${esc(t.cliente)}" placeholder="Mariana & Mario"></label>
+      <div class="grid2"><label class="f">Viajeros<input id="f-cliente" data-f="cliente" value="${esc(t.cliente)}" placeholder="Mariana & Mario"></label>
+      <label class="f">Correos de los clientes<input id="f-email" data-f="email" type="text" inputmode="email" autocapitalize="off" value="${esc(t.email)}" placeholder="Correos separados por coma"></label></div>
+      <p class="note">Con su correo, tu cliente entra a la app y ve todos sus viajes contigo. Si prefieres, también puedes mandarle el link directo del viaje.</p>
       ${linkHTML(t)}
       <div class="grid2"><label class="f">Llegada<input id="f-inicio" data-f="inicio" type="date" value="${esc(t.inicio)}"></label>
       <label class="f">Regreso<input id="f-fin" data-f="fin" type="date" value="${esc(t.fin)}"></label></div>
@@ -1220,5 +1222,5 @@ render();
 })();
 })();
 </script>
-<script type="module" src="runtime.js?v=6"></script>
+<script type="module" src="runtime.js?v=7"></script>
 </body></html>
