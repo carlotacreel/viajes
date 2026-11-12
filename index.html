@@ -1143,6 +1143,7 @@ function conservar(nt,old){
   ((nt.lookbook&&nt.lookbook.bloques)||[]).forEach(b=>{if(!tiene(b)&&tiene(oBl[b.id]))b.fotos=oBl[b.id].fotos});
   if(!(nt.clientes||[]).length&&(old.clientes||[]).length)nt.clientes=old.clientes;
   if(!nt.email&&old.email)nt.email=old.email;
+  if(!nt.token&&old.token)nt.token=old.token;
   if(!(nt.docs||[]).length&&(old.docs||[]).length)nt.docs=old.docs;
   return nt;
 }
